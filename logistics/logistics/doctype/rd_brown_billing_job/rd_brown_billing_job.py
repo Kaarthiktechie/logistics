@@ -86,6 +86,7 @@ class RD_BrownBillingJob(Document):
         self.item_price = self.get_price()
         vehicles = self.get_vehicles()
         for vehicle in vehicles:
+            self.original_truck_no.clear()
             cumulative_km = 0
             self.cumulative_rent_amount = 0
             print(vehicle.truck_no)
@@ -99,7 +100,13 @@ class RD_BrownBillingJob(Document):
             total_amount_wihout_rental = ((cumulative_km/mileage.mileage)*diesel_average_rate)
             print(cumulative_rent_amount)
             total_amount_with_rental = total_amount_wihout_rental + cumulative_rent_amount
-            self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", vehicle.truck_no, 1,total_amount_with_rental)
+            original_truck_no_string = ""
+            for every_truck_no in self.original_truck_no:
+                if every_truck_no == self.original_truck_no[-1]:
+                    original_truck_no_string += str(every_truck_no)
+                else:
+                    original_truck_no_string += str(every_truck_no)+","
+            self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", original_truck_no_string, 1,total_amount_with_rental)
             if cumulative_toll_charges > 0:
                 self.add_item(4, "Toll_charges", "Total toll_charges", 1, cumulative_toll_charges)
         sales_order = self.new_sales_order(self.items)
@@ -215,7 +222,7 @@ class RD_BrownBillingJob(Document):
                 'load_date': ['>=', self.bill_from_date],
                 'load_date': ['<=', self.bill_to_date]
             },
-            fields=['price_list', 'load_date', 'truck_no',"total_freight",'total_freight', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
+            fields=['price_list', 'load_date','original_truck_no', 'truck_no',"total_freight",'total_freight', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
             order_by ='ref_no asc')
         # print("trips_value", trips)
 
