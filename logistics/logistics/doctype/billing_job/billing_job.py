@@ -16,6 +16,8 @@ class BillingJob(Document):
         self.cumulative_km = 0
         self.item_price = None
         self.cumulative_loading_unloading_charges = 0
+        self.original_truck_no = []
+        
         # # Todo Remove these lines after updating the field names in doctype
         # self.customer_id = None
         # self.route_name = None
@@ -36,6 +38,7 @@ class BillingJob(Document):
         print("* Item Price : ", self.item_price.packing_unit, self.item_price.price_list_rate, self.item_price.excess_billing_type)
         vehicles = self.get_vehicles()
         for vehicle in vehicles:
+            self.original_truck_no.clear()
             self.cumulative_toll_charges = 0
             self.cumulative_loading_unloading_charges = 0
             self.bill_vehicle(vehicle)
@@ -59,7 +62,7 @@ class BillingJob(Document):
         return None
 
     def get_vehicles(self):
-        vehicles = frappe.db.get_list('Tripsheets',
+        vehicles = frappe.db.get_list('Tripsheet-Kachi',
             filters={
                 'customer': ['=', self.customer],
                 'price_list':["=", self.price_list], 
@@ -93,15 +96,21 @@ class BillingJob(Document):
 
     def bill_vehicle(self, vehicle):
         on_contract_trips, excess_trips, crossover_excess_km = self.get_assorted_trips(vehicle)
-
+        original_truck_no_string = ""
+        # self.original_truck_no = set(self.original_truck_no)
+        for every_truck_no in self.original_truck_no:
+            if every_truck_no == self.original_truck_no[-1]:
+                original_truck_no_string += str(every_truck_no)
+            else:
+                original_truck_no_string += str(every_truck_no)+","
         if on_contract_trips:
             item = "TRANSPORT CHARGES - MONTHLY"
-            self.add_item(item, item, vehicle.truck_no, 1,self.item_price.price_list_rate)
+            self.add_item(item, item, original_truck_no_string, 1,self.item_price.price_list_rate)
             # print (item)
             #print("vehicle.truck_no : ",  vehicle.truck_no)
         if crossover_excess_km > 0:
             item = "TRANSPORT CHARGES - KM"
-            self.add_item_auto_price(item, item, vehicle.truck_no, crossover_excess_km)
+            self.add_item_auto_price(item, item,original_truck_no_string, crossover_excess_km)
             # print("crossover_excess_km : ", crossover_excess_km)
         if excess_trips:
             excess_km = 0
@@ -109,13 +118,13 @@ class BillingJob(Document):
                 for excess_trip in excess_trips:
                     excess_km += excess_trip.running_km
                 item = "TRANSPORT CHARGES - KM"
-                self.add_item_auto_price(item, item, vehicle.truck_no, excess_km)
+                self.add_item_auto_price(item, item,original_truck_no_string, excess_km)
             else:
                 excess_routes = list(map(lambda t:t.location, excess_trips))
                 for excess_route in set(excess_routes):
                     item = "TRANSPORT CHARGES - TRIPS"
                     print(excess_route)
-                    self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route))
+                    self.add_item_auto_price(excess_route, item,original_truck_no_string, excess_routes.count(excess_route))
         
         if self.cumulative_toll_charges > 0:
            self.add_item(4, "TOLL_CHARGES", "Total toll_charges", 1, self.cumulative_toll_charges)
@@ -137,6 +146,8 @@ class BillingJob(Document):
         excess_trips = []
 
         for trip in trips:
+            if trip.original_truck_no not in self.original_truck_no:
+                self.original_truck_no.append(trip.original_truck_no)
             self.cumulative_toll_charges = self.get_toll_charges(trip)
             self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
             crossover_trip = None
@@ -176,7 +187,7 @@ class BillingJob(Document):
         return self.cumulative_loading_unloading_charges
 
     def get_trips(self, vehicle):
-        trips = frappe.db.get_list('Tripsheets',
+        trips = frappe.db.get_list('Tripsheet-Kachi',
             filters={
                 'customer': ['=', self.customer],
                 'price_list': ['=', self.price_list],
@@ -185,7 +196,7 @@ class BillingJob(Document):
                 'load_date': ['>=', self.bill_from_date],
                 'load_date': ['<=', self.bill_to_date]
             },
-            fields=['price_list', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
+            fields=['price_list','original_truck_no', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
             order_by = 'ref_no asc')
         # print("trips_value", trips)
        
@@ -239,6 +250,5 @@ class BillingJob(Document):
             "qty": qty,
             "doc_type": "Sales Order Item"
         })            
-
 
 
