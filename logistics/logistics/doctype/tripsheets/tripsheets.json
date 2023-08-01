@@ -1,0 +1,165 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "creation": "2023-08-01 11:57:19.120284",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "s_no",
+  "ref_no",
+  "customer",
+  "price_list",
+  "load_date",
+  "truck_no",
+  "location",
+  "starting_km",
+  "closing_km",
+  "running_km",
+  "total_freight",
+  "column_break_hmkm",
+  "billing_point",
+  "bill_type",
+  "lr_no",
+  "halt_days",
+  "pod_rec_date",
+  "freight_balance",
+  "driver",
+  "freight_received",
+  "billing_truck_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "s_no",
+   "fieldtype": "Data",
+   "label": "S. No."
+  },
+  {
+   "fieldname": "ref_no",
+   "fieldtype": "Data",
+   "label": "Ref. No."
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "label": "Price List",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "load_date",
+   "fieldtype": "Date",
+   "label": "Load Date"
+  },
+  {
+   "fieldname": "truck_no",
+   "fieldtype": "Data",
+   "label": "Truck No"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  },
+  {
+   "fieldname": "starting_km",
+   "fieldtype": "Int",
+   "label": "Starting KM"
+  },
+  {
+   "fieldname": "closing_km",
+   "fieldtype": "Int",
+   "label": "Closing KM"
+  },
+  {
+   "fieldname": "running_km",
+   "fieldtype": "Int",
+   "label": "Running KM"
+  },
+  {
+   "fieldname": "total_freight",
+   "fieldtype": "Data",
+   "label": "Total Freight"
+  },
+  {
+   "fieldname": "column_break_hmkm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "billing_point",
+   "fieldtype": "Data",
+   "label": "Billing Point"
+  },
+  {
+   "fieldname": "bill_type",
+   "fieldtype": "Data",
+   "label": "Bill Type"
+  },
+  {
+   "fieldname": "lr_no",
+   "fieldtype": "Data",
+   "label": "LR No"
+  },
+  {
+   "fieldname": "halt_days",
+   "fieldtype": "Int",
+   "label": "Halt Days"
+  },
+  {
+   "fieldname": "pod_rec_date",
+   "fieldtype": "Date",
+   "label": "POD Rec. Date"
+  },
+  {
+   "fieldname": "freight_balance",
+   "fieldtype": "Data",
+   "label": "Freight Balance"
+  },
+  {
+   "fieldname": "driver",
+   "fieldtype": "Data",
+   "label": "Driver"
+  },
+  {
+   "fieldname": "freight_received",
+   "fieldtype": "Data",
+   "label": "Freight Received"
+  },
+  {
+   "fieldname": "billing_truck_no",
+   "fieldtype": "Data",
+   "label": "Billing Truck No"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-01 11:57:42.177352",
+ "modified_by": "Administrator",
+ "module": "Logistics",
+ "name": "Tripsheets",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
