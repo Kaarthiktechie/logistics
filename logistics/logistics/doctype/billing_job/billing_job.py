@@ -71,7 +71,7 @@ class BillingJob(Document):
             return None
 
     def get_vehicles(self):
-        vehicles = frappe.db.get_list('Tripsheets',
+        vehicles = frappe.db.get_list('Tripsheet-Kachi',
             filters={
                 'customer': ['=', self.customer],
                 'price_list':["=", self.price_list], 
@@ -172,7 +172,7 @@ class BillingJob(Document):
         return self.cumulative_loading_unloading_charges
 
     def get_trips(self, vehicle):
-        trips = frappe.db.get_list('Tripsheets',
+        trips = frappe.db.get_list('Tripsheet-Kachi',
             filters={
                 'customer': ['=', self.customer],
                 'price_list': ['=', self.price_list],
