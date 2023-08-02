@@ -17,14 +17,6 @@ class BillingJob(Document):
         self.cumulative_loading_unloading_charges = 0
         self.food_charges = 0
         self.original_truck_no = []
-        
-        # # Todo Remove these lines after updating the field names in doctype
-        # self.customer_id = None
-        # self.route_name = None
-        # self.price_list_name = None
-        # self.bill_from_date = None
-        # self.bill_to_date = None
-        # self.price_list = None
 
     def validate(self):
         # ToDo add validations
@@ -159,7 +151,6 @@ class BillingJob(Document):
             return self.food_charges
     
     def get_toll_charges(self, trip):
-        # cumulative_km = 0
         if (trip.toll_charges == None):
             trip.toll_charges = 0
         self.cumulative_toll_charges += trip.toll_charges

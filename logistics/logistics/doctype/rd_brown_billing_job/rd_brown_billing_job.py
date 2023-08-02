@@ -22,7 +22,16 @@ class RD_BrownBillingJob(Document):
 
     def validate(self):
         self.init()
-        self.rd_brown()
+        if self.customer:
+            customer_list=[self.customer]
+        else:
+            customer_list = ["RD BROWN BOX PACKING PVT LTD-ORG",
+                             "RD BROWN BOX PACKING PVT LTD-VYR",
+                             "RD BROWN BOX PACKING PVT LTD-SPR"]
+        for every_customer in customer_list:
+            self.items.clear()
+            self.customer = every_customer
+            self.rd_brown()
     
     def get_price(self):
         item_code = "TRANSPORT CHARGES"
@@ -102,7 +111,7 @@ class RD_BrownBillingJob(Document):
                     original_truck_no_string += str(every_truck_no)
                 else:
                     original_truck_no_string += str(every_truck_no)+","
-            self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", original_truck_no_string, 1,total_amount_with_rental)
+            self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", vehicle.truck_no, 1,total_amount_with_rental)
             if cumulative_toll_charges > 0:
                 self.add_item(4, "Toll_charges", "Total toll_charges", 1, cumulative_toll_charges)
         sales_order = self.new_sales_order(self.items)
