@@ -60,7 +60,7 @@ class RD_BrownBillingJob(Document):
         return None
 
     def get_vehicles(self):
-        vehicles = frappe.db.get_list('Tripsheet-Kachi',
+        vehicles = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
                 # 'price_list':["=", self.price_list], 
@@ -159,7 +159,7 @@ class RD_BrownBillingJob(Document):
         i = 0
         cumulative_diesel_rate = 0
         total_diesel_rate = frappe.db.get_list(
-            "Diesel  Price", filters={
+            "Diesel Price", filters={
                 'date': ['>=', self.bill_from_date],
                 'date': ['<=', self.bill_to_date]
             }  , fields=["diesel_rate", "date"]                                 
@@ -213,7 +213,7 @@ class RD_BrownBillingJob(Document):
         return cumulative_km , self.cumulative_toll_charges
 
     def get_trips(self, vehicle):
-        trips = frappe.db.get_list('Tripsheet-Kachi',
+        trips = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
                 # 'price_list': ['=', self.price_list],
