@@ -6,6 +6,7 @@ from frappe.model.document import Document
 from datetime import date
 
 class RD_BrownBillingJob(Document):
+    
     def init(self):
         self.today = date.today()
         self.diesel_rate = 90 
@@ -17,6 +18,7 @@ class RD_BrownBillingJob(Document):
         self.item_price = None
         self.rent_amount = 0
         self.cumulative_rent_amount = 0
+        self.original_truck_no = []
         # # Todo Remove these lines after updating the field names in doctype
         # self.customer_id = None
         # self.route_name = None
@@ -29,9 +31,6 @@ class RD_BrownBillingJob(Document):
         # ToDo add validations
         self.init()
         self.rd_brown()
-        
-        
-
     def bill(self):
         self.item_price = self.get_price()
         if self.item_price == None:
@@ -39,6 +38,7 @@ class RD_BrownBillingJob(Document):
         print("* Item Price : ", self.item_price.packing_unit, self.item_price.price_list_rate, self.item_price.excess_billing_type)
         vehicles = self.get_vehicles()
         for vehicle in vehicles:
+            self.original_truck_no.clear()
             self.bill_vehicle(vehicle)
         print(self.items)
         sales_order = self.new_sales_order(self.items)
@@ -86,18 +86,27 @@ class RD_BrownBillingJob(Document):
         self.item_price = self.get_price()
         vehicles = self.get_vehicles()
         for vehicle in vehicles:
+            self.original_truck_no.clear()
             cumulative_km = 0
             self.cumulative_rent_amount = 0
             print(vehicle.truck_no)
             mileage = self.vehicle_details(vehicle.truck_no) #if said the value will be billingtruck no then have to change the value
             trips = self.get_trips(vehicle)
             for trip in trips:
+                if trip.original_truck_no not in self.original_truck_no:
+                    self.original_truck_no.append(trip.original_truck_no)
                 cumulative_rent_amount = self.get_rent_amount(trip.total_freight)
                 cumulative_km, cumulative_toll_charges = self.get_total_kms(cumulative_km, trip)
             total_amount_wihout_rental = ((cumulative_km/mileage.mileage)*diesel_average_rate)
             print(cumulative_rent_amount)
             total_amount_with_rental = total_amount_wihout_rental + cumulative_rent_amount
-            self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", vehicle.truck_no, 1,total_amount_with_rental)
+            original_truck_no_string = ""
+            for every_truck_no in self.original_truck_no:
+                if every_truck_no == self.original_truck_no[-1]:
+                    original_truck_no_string += str(every_truck_no)
+                else:
+                    original_truck_no_string += str(every_truck_no)+","
+            self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", original_truck_no_string, 1,total_amount_with_rental)
             if cumulative_toll_charges > 0:
                 self.add_item(4, "Toll_charges", "Total toll_charges", 1, cumulative_toll_charges)
         sales_order = self.new_sales_order(self.items)
@@ -109,15 +118,22 @@ class RD_BrownBillingJob(Document):
 
     def bill_vehicle(self, vehicle):
         on_contract_trips, excess_trips, crossover_excess_km = self.get_assorted_trips(vehicle)
+        original_truck_no_string = ""
+        # self.original_truck_no = set(self.original_truck_no)
+        for every_truck_no in self.original_truck_no:
+            if every_truck_no == self.original_truck_no[-1]:
+                original_truck_no_string += str(every_truck_no)
+            else:
+                original_truck_no_string += str(every_truck_no)+","
 
         if on_contract_trips:
             item = "TRANSPORT CHARGES - MONTHLY"
-            self.add_item(item, item, vehicle.truck_no, 1,self.item_price.price_list_rate)
+            self.add_item(item, item, original_truck_no_string, 1,self.item_price.price_list_rate)
             # print (item)
             #print("vehicle.truck_no : ",  vehicle.truck_no)
         if crossover_excess_km > 0:
             item = "TRANSPORT CHARGES - KM"
-            self.add_item_auto_price(item, item, vehicle.truck_no, crossover_excess_km)
+            self.add_item_auto_price(item, item, original_truck_no_string, crossover_excess_km)
             # print("crossover_excess_km : ", crossover_excess_km)
         if excess_trips:
             excess_km = 0
@@ -125,13 +141,13 @@ class RD_BrownBillingJob(Document):
                 for excess_trip in excess_trips:
                     excess_km += excess_trip.running_km
                 item = "TRANSPORT CHARGES - KM"
-                self.add_item_auto_price(item, item, vehicle.truck_no, excess_km)
+                self.add_item_auto_price(item, item, original_truck_no_string, excess_km)
             else:
                 excess_routes = list(map(lambda t:t.location, excess_trips))
                 for excess_route in set(excess_routes):
                     item = "TRANSPORT CHARGES - TRIPS"
                     print(excess_route)
-                    self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route))
+                    self.add_item_auto_price(excess_route, item, original_truck_no_string, excess_routes.count(excess_route))
 
         #if cumulative_toll_charges > 0:
         #    self.add_item(4, "Toll_charges", "Total toll_charges", 1, self.cumulative_toll_charges)
@@ -206,7 +222,7 @@ class RD_BrownBillingJob(Document):
                 'load_date': ['>=', self.bill_from_date],
                 'load_date': ['<=', self.bill_to_date]
             },
-            fields=['price_list', 'load_date', 'truck_no',"total_freight",'total_freight', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
+            fields=['price_list', 'load_date','original_truck_no', 'truck_no',"total_freight",'total_freight', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
             order_by ='ref_no asc')
         # print("trips_value", trips)
 
@@ -260,3 +276,4 @@ class RD_BrownBillingJob(Document):
             "qty": qty,
             "doc_type": "Sales Order Item"
         })            
+
