@@ -56,7 +56,7 @@ class RD_BrownBillingJob(Document):
             return None
 
     def get_vehicles(self):
-        vehicles = frappe.db.get_list('Tripsheets',
+        vehicles = frappe.db.get_list('Tripsheet-Kachi',
             filters={
                 'customer': ['=', self.customer],
                 # 'price_list':["=", self.price_list], 
@@ -88,6 +88,8 @@ class RD_BrownBillingJob(Document):
         vehicles = self.get_vehicles()
         
         for vehicle in vehicles:
+            self.cumulative_toll_charges = 0
+            self.cumulative_toll_charges = self.get_toll_charges(vehicle)
             self.original_truck_no.clear()
             cumulative_km = 0
             self.cumulative_rent_amount = 0
@@ -97,23 +99,31 @@ class RD_BrownBillingJob(Document):
             trips = self.get_trips(vehicle)
             
             for trip in trips:
+                self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
                 if trip.original_truck_no not in self.original_truck_no:
                     self.original_truck_no.append(trip.original_truck_no)
                 cumulative_rent_amount = self.get_rent_amount(trip.total_freight)
-                cumulative_km, cumulative_toll_charges = self.get_total_kms(cumulative_km, trip)
+                cumulative_km = self.get_total_kms(cumulative_km, trip)
             total_amount_wihout_rental = ((cumulative_km/mileage.mileage)*diesel_average_rate)
             print(cumulative_rent_amount)
             total_amount_with_rental = total_amount_wihout_rental + cumulative_rent_amount
-            original_truck_no_string = ""
             
+            original_truck_no_string = ""
             for every_truck_no in self.original_truck_no:
                 if every_truck_no == self.original_truck_no[-1]:
                     original_truck_no_string += str(every_truck_no)
                 else:
                     original_truck_no_string += str(every_truck_no)+","
+                    
             self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", vehicle.truck_no, 1,total_amount_with_rental)
-            if cumulative_toll_charges > 0:
-                self.add_item(4, "Toll_charges", "Total toll_charges", 1, cumulative_toll_charges)
+        
+            if self.cumulative_toll_charges > 0:
+                self.add_item("TOLL_CHARGES", "TOLL_CHARGES", "Total toll_charges", 1, self.cumulative_toll_charges)
+            if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
+                self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges For the Customer",self.original_truck_no.count())
+            if self.cumulative_loading_unloading_charges > 0:
+                self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
+                
         sales_order = self.new_sales_order(self.items)
         sales_order.insert()
     
@@ -125,7 +135,7 @@ class RD_BrownBillingJob(Document):
         i = 0
         cumulative_diesel_rate = 0
         total_diesel_rate = frappe.db.get_list(
-            "Diesel Price", filters={
+            "Diesel  Price", filters={
                 'date': ['>=', self.bill_from_date],
                 'date': ['<=', self.bill_to_date]
             }  , fields=["diesel_rate", "date"]                                 
@@ -136,17 +146,30 @@ class RD_BrownBillingJob(Document):
             i +=1
         diesel_average_rate = (cumulative_diesel_rate/i) 
         return diesel_average_rate
+    
+    def get_toll_charges(self, vehicle):
+        tollcharges = frappe.db.get_list("Toll Charge", filters={
+            "truck_no": vehicle.original_truck_no
+        },fields=["toll_charge"])
+        for every_toll_charge in tollcharges:
+            self.cumulative_toll_charges += every_toll_charge.toll_charge
+        return self.cumulative_toll_charges
+    
+    def get_loading_charges(self, trip):
+        if (trip.loading_charges == None):
+            trip.loading_charges = 0
+        self.cumulative_loading_unloading_charges += trip.loading_charges
+        return self.cumulative_loading_unloading_charges
         
-
     def get_total_kms(self, cumulative_km, trip):
         trip_km =  int(trip.closing_km) - int(trip.starting_km)
         print(trip_km)
         cumulative_km += trip_km
         print("cumulative_km: ", cumulative_km)
-        return cumulative_km , self.cumulative_toll_charges
+        return cumulative_km 
 
     def get_trips(self, vehicle):
-        trips = frappe.db.get_list('Tripsheets',
+        trips = frappe.db.get_list('Tripsheet-Kachi',
             filters={
                 'customer': ['=', self.customer],
                 # 'price_list': ['=', self.price_list],

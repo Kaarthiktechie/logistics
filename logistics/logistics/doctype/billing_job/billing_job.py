@@ -34,6 +34,7 @@ class BillingJob(Document):
             self.cumulative_toll_charges = 0
             self.cumulative_loading_unloading_charges = 0
             self.food_charges = 0
+            self.cumulative_toll_charges = self.get_toll_charges(vehicle)
             self.bill_vehicle(vehicle)
         print(self.items)
         sales_order = self.new_sales_order(self.items)
@@ -63,7 +64,7 @@ class BillingJob(Document):
             return None
 
     def get_vehicles(self):
-        vehicles = frappe.db.get_list('Tripsheets',
+        vehicles = frappe.db.get_list('Tripsheet-Kachi',
             filters={
                 'customer': ['=', self.customer],
                 'price_list':["=", self.price_list], 
@@ -72,7 +73,7 @@ class BillingJob(Document):
                 'load_date': ['<=', self.bill_to_date]
                 # 'truck_no':  ['=', self.truck_no]
             },
-            fields=['distinct truck_no as truck_no'],
+            fields=['distinct truck_no as truck_no',"original_truck_no"],
             group_by='truck_no')
         return vehicles
 
@@ -108,9 +109,9 @@ class BillingJob(Document):
                     self.add_item_auto_price(excess_route, item,original_truck_no_string, excess_routes.count(excess_route))
         
         if self.cumulative_toll_charges > 0:
-           self.add_item(4, "TOLL_CHARGES", "Total toll_charges", 1, self.cumulative_toll_charges)
+           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", "Total toll_charges", 1, self.cumulative_toll_charges)
         if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
-            self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges For the Customer",1)
+            self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges For the Customer",self.original_truck_no.count())
         if self.cumulative_loading_unloading_charges > 0:
             self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
     
@@ -125,7 +126,7 @@ class BillingJob(Document):
         for trip in trips:
             if trip.original_truck_no not in self.original_truck_no:
                 self.original_truck_no.append(trip.original_truck_no)
-            self.cumulative_toll_charges = self.get_toll_charges(trip)
+            # self.cumulative_toll_charges = self.get_toll_charges(vehicle)
             self.food_charges = self.get_food_charges(trip)
             self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
             crossover_trip = None
@@ -150,10 +151,12 @@ class BillingJob(Document):
             self.food_charges += trip.food_charges
             return self.food_charges
     
-    def get_toll_charges(self, trip):
-        if (trip.toll_charges == None):
-            trip.toll_charges = 0
-        self.cumulative_toll_charges += trip.toll_charges
+    def get_toll_charges(self, vehicle):
+        tollcharges = frappe.db.get_list("Toll Charge", filters={
+            "truck_no": vehicle.original_truck_no
+        },fields=["toll_charge"])
+        for every_toll_charge in tollcharges:
+            self.cumulative_toll_charges += every_toll_charge.toll_charge
         return self.cumulative_toll_charges
     
     def get_loading_charges(self, trip):
@@ -163,7 +166,7 @@ class BillingJob(Document):
         return self.cumulative_loading_unloading_charges
 
     def get_trips(self, vehicle):
-        trips = frappe.db.get_list('Tripsheets',
+        trips = frappe.db.get_list('Tripsheet-Kachi',
             filters={
                 'customer': ['=', self.customer],
                 'price_list': ['=', self.price_list],
