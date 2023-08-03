@@ -6,7 +6,6 @@ from frappe.model.document import Document
 from datetime import date
 
 class RD_BrownBillingJob(Document):
-    
     def init(self):
         self.today = date.today()
         self.diesel_rate = 90 
@@ -19,6 +18,7 @@ class RD_BrownBillingJob(Document):
         self.rent_amount = 0
         self.cumulative_rent_amount = 0
         self.original_truck_no = []
+        self.cumulative_loading_unloading_charges = 0
 
     def validate(self):
         self.init()
@@ -65,7 +65,7 @@ class RD_BrownBillingJob(Document):
                 'load_date': ['<=', self.bill_to_date]
                 # 'truck_no':  ['=', self.truck_no]
             },
-            fields=['distinct truck_no as truck_no'],
+            fields=['distinct truck_no as truck_no',"original_truck_no"],
             group_by='truck_no')
         return vehicles
 
@@ -118,7 +118,7 @@ class RD_BrownBillingJob(Document):
             self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", vehicle.truck_no, 1,total_amount_with_rental)
         
             if self.cumulative_toll_charges > 0:
-                self.add_item("TOLL_CHARGES", "TOLL_CHARGES", "Total toll_charges", 1, self.cumulative_toll_charges)
+                self.add_item("TOLL_CHARGES", "TOLL_CHARGES", original_truck_no_string, 1, self.cumulative_toll_charges)
             if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
                 self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges For the Customer",self.original_truck_no.count())
             if self.cumulative_loading_unloading_charges > 0:
@@ -149,11 +149,16 @@ class RD_BrownBillingJob(Document):
     
     def get_toll_charges(self, vehicle):
         tollcharges = frappe.db.get_list("Toll Charge", filters={
-            "truck_no": vehicle.original_truck_no
-        },fields=["toll_charge"])
-        for every_toll_charge in tollcharges:
-            self.cumulative_toll_charges += every_toll_charge.toll_charge
-        return self.cumulative_toll_charges
+            "truck_no": vehicle.original_truck_no,
+            "customer" : self.customer
+        },fields=["amount"])
+        if tollcharges:
+            for every_toll_charge in tollcharges:
+                self.cumulative_toll_charges += every_toll_charge.amount
+            return self.cumulative_toll_charges
+        else:
+            self.cumulative_toll_charges = 0
+            return self.cumulative_toll_charges
     
     def get_loading_charges(self, trip):
         if (trip.loading_charges == None):

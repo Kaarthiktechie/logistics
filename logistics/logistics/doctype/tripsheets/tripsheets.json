@@ -28,7 +28,9 @@
   "freight_balance",
   "driver",
   "freight_received",
-  "billing_truck_no"
+  "billing_truck_no",
+  "original_truck_no",
+  "loading_and_unloading_charges"
  ],
  "fields": [
   {
@@ -135,12 +137,23 @@
   {
    "fieldname": "billing_truck_no",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Billing Truck No"
+  },
+  {
+   "fieldname": "original_truck_no",
+   "fieldtype": "Data",
+   "label": "Original Truck No"
+  },
+  {
+   "fieldname": "loading_and_unloading_charges",
+   "fieldtype": "Int",
+   "label": "Loading And Unloading Charges"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-01 11:57:42.177352",
+ "modified": "2023-08-03 22:41:24.557072",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Tripsheets",

@@ -39,7 +39,7 @@ class TripBillingJob(Document):
         item_prices = frappe.db.get_list("Item Price",
                     filters={
                     "customer": self.customer,
-                    # "price_list" : self.price_list,
+                    "price_list" : "Standard Selling",
                     "item_code" : item_code ,
                     "valid_from" : ["<=", self.bill_from_date]
                     #"valid_upto" : [">=", self.bill_to_date]
@@ -71,7 +71,7 @@ class TripBillingJob(Document):
     
     
     def bill_vehicle(self, vehicle):
-        on_contract_trips, excess_trips, crossover_excess_km = self.get_assorted_trips(vehicle)
+        excess_trips = self.get_assorted_trips(vehicle)
 
         if excess_trips:
             excess_routes = list(map(lambda t:t.location, excess_trips))
@@ -80,7 +80,7 @@ class TripBillingJob(Document):
                 print(excess_route)
                 self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route))
         if self.cumulative_toll_charges > 0:
-           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", "Total toll_charges", 1, self.cumulative_toll_charges)
+           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", vehicle.truck_no, 1, self.cumulative_toll_charges)
         if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
             self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges For the Customer",self.original_truck_no.count())
         if self.cumulative_loading_unloading_charges > 0:
@@ -89,8 +89,6 @@ class TripBillingJob(Document):
     def get_assorted_trips(self, vehicle): 
         trips = self.get_trips(vehicle)  
         cumulative_km = 0
-        crossover_excess_km = 0
-        on_contract_trips = []
         excess_trips = []
 
         for trip in trips:
@@ -99,10 +97,9 @@ class TripBillingJob(Document):
             self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
             cumulative_km += trip.running_km
             print("+", trip.truck_no, trip.load_date, trip.location, trip.running_km, cumulative_km)
-            
             excess_trips.append(trip)
 
-        return on_contract_trips, excess_trips, crossover_excess_km
+        return excess_trips
     
     def get_total_kms(self, cumulative_km, trip):
         trip_km =  int(trip.closing_km) - int(trip.starting_km)
@@ -112,11 +109,16 @@ class TripBillingJob(Document):
     
     def get_toll_charges(self, vehicle):
         tollcharges = frappe.db.get_list("Toll Charge", filters={
-            "truck_no": vehicle.original_truck_no
-        },fields=["toll_charge"])
-        for every_toll_charge in tollcharges:
-            self.cumulative_toll_charges += every_toll_charge.toll_charge
-        return self.cumulative_toll_charges
+            "truck_no": vehicle.truck_no,
+            "customer" : self.customer
+        },fields=["amount"])
+        if tollcharges:
+            for every_toll_charge in tollcharges:
+                self.cumulative_toll_charges += int(every_toll_charge.amount)
+            return self.cumulative_toll_charges
+        else:
+            self.cumulative_toll_charges = 0
+            return self.cumulative_toll_charges
     
     def get_loading_charges(self, trip):
         if (trip.loading_charges == None):
