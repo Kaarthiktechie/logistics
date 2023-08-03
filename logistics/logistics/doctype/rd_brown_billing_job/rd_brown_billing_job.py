@@ -56,7 +56,7 @@ class RD_BrownBillingJob(Document):
             return None
 
     def get_vehicles(self):
-        vehicles = frappe.db.get_list('Tripsheet-Kachi',
+        vehicles = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
                 # 'price_list':["=", self.price_list], 
@@ -174,7 +174,7 @@ class RD_BrownBillingJob(Document):
         return cumulative_km 
 
     def get_trips(self, vehicle):
-        trips = frappe.db.get_list('Tripsheet-Kachi',
+        trips = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
                 # 'price_list': ['=', self.price_list],

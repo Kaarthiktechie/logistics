@@ -8,7 +8,7 @@ from datetime import date
 class BillingJob(Document):
     def init(self):
         self.today = date.today()
-        self.cumulative_toll_charges = 0.
+        self.cumulative_toll_charges = 0
         self.items = []
         self.items.clear()
         self.billing_vehicle = None
@@ -64,7 +64,7 @@ class BillingJob(Document):
             return None
 
     def get_vehicles(self):
-        vehicles = frappe.db.get_list('Tripsheet-Kachi',
+        vehicles = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
                 # 'price_list':["=", self.price_list], 
@@ -183,7 +183,7 @@ class BillingJob(Document):
         return self.cumulative_loading_unloading_charges
 
     def get_trips(self, vehicle):
-        trips = frappe.db.get_list('Tripsheet-Kachi',
+        trips = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
                 'price_list': ['=', self.price_list],
