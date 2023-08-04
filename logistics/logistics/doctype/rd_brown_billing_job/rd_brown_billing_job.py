@@ -86,7 +86,8 @@ class RD_BrownBillingJob(Document):
         diesel_average_rate = self.get_diesel_average_rate()
         self.item_price = self.get_price()
         vehicles = self.get_vehicles()
-        
+        if vehicles == None:
+            frappe.throw("Vehicle Details Not Found")
         for vehicle in vehicles:
             self.cumulative_toll_charges = 0
             self.cumulative_toll_charges = self.get_toll_charges(vehicle)
@@ -97,7 +98,8 @@ class RD_BrownBillingJob(Document):
             truck_size = self.vehicle_truck_size(vehicle.truck_no)
             mileage = self.vehicle_details(truck_size)
             trips = self.get_trips(vehicle)
-            
+            if trips == None:
+                frappe.throw("Trips Not Found")
             for trip in trips:
                 self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
                 if trip.original_truck_no not in self.original_truck_no:

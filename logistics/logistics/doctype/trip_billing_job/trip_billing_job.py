@@ -23,6 +23,8 @@ class TripBillingJob(Document):
     def bill(self):
         
         vehicles = self.get_vehicles()
+        if vehicles == None:
+            frappe.throw("Vehicle Details Not Found")
         for vehicle in vehicles:
             self.cumulative_toll_charges = 0
             self.cumulative_loading_unloading_charges = 0
@@ -92,6 +94,8 @@ class TripBillingJob(Document):
         excess_trips = []
 
         for trip in trips:
+            if trips == None:
+                frappe.throw("Trips Not Found")
             self.trip_count += 1
             print(self.trip_count)
             self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)

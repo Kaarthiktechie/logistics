@@ -29,6 +29,8 @@ class BillingJob(Document):
             frappe.throw("Pricing Details Not Found")
         print("* Item Price : ", self.item_price.packing_unit, self.item_price.price_list_rate, self.item_price.excess_billing_type)
         vehicles = self.get_vehicles()
+        if vehicles == None:
+            frappe.throw("Vehicle Details Not Found")
         for vehicle in vehicles:
             self.original_truck_no.clear()
             self.cumulative_toll_charges = 0
@@ -116,7 +118,9 @@ class BillingJob(Document):
             self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
     
     def get_assorted_trips(self, vehicle): 
-        trips = self.get_trips(vehicle)  
+        trips = self.get_trips(vehicle)
+        if trips == None:
+            frappe.throw("Trips Not Found")  
         limit = self.item_price.km_limit
         cumulative_km = 0
         crossover_excess_km = 0
