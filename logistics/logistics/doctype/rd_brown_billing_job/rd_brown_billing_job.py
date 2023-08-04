@@ -67,7 +67,10 @@ class RD_BrownBillingJob(Document):
             },
             fields=['distinct truck_no as truck_no',"original_truck_no"],
             group_by='truck_no')
-        return vehicles
+        if vehicles:
+            return vehicles
+        else:
+            return None
 
     def vehicle_details(self, truck_size):
         mileage = frappe.db.get_list("Mileage", 

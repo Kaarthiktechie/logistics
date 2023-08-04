@@ -77,7 +77,10 @@ class BillingJob(Document):
             },
             fields=['distinct truck_no as truck_no',"original_truck_no"],
             group_by='truck_no')
-        return vehicles
+        if vehicles:
+            return vehicles
+        else:
+            return None
 
     def bill_vehicle(self, vehicle):
         on_contract_trips, excess_trips, crossover_excess_km = self.get_assorted_trips(vehicle)
@@ -198,9 +201,10 @@ class BillingJob(Document):
             },
             fields=['price_list','original_truck_no', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
             order_by = 'ref_no asc')
-        # print("trips_value", trips)
-       
-        return trips
+        if trips:
+            return trips
+        else:
+            return None
     
     def new_sales_order(self, items):
         company = frappe.defaults.get_user_default("Company") # need to change
