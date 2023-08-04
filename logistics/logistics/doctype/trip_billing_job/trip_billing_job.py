@@ -108,7 +108,7 @@ class TripBillingJob(Document):
         return self.cumulative_km , self.cumulative_toll_charges
     
     def get_toll_charges(self, vehicle):
-        tollcharges = frappe.db.get_list("Toll Charge", filters={
+        tollcharges = frappe.db.get_list("Toll Charges", filters={
             "truck_no": vehicle.truck_no,
             "customer" : self.customer
         },fields=["amount"])

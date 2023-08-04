@@ -159,7 +159,7 @@ class BillingJob(Document):
         toll_charges_with_date =[]
         if vehicle.original_truck_no == None:
             vehicle.original_truck_no = vehicle.truck_no
-        tollcharges = frappe.db.get_list("Toll Charge", filters={
+        tollcharges = frappe.db.get_list("Toll Charges", filters={
             "truck_no": vehicle.original_truck_no,
             "customer" : self.customer
         },fields=["amount","transaction_date_time"])

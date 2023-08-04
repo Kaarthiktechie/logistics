@@ -135,7 +135,7 @@ class RD_BrownBillingJob(Document):
         i = 0
         cumulative_diesel_rate = 0
         total_diesel_rate = frappe.db.get_list(
-            "Diesel  Price", filters={
+            "Diesel Price", filters={
                 'date': ['>=', self.bill_from_date],
                 'date': ['<=', self.bill_to_date]
             }  , fields=["diesel_rate", "date"]                                 
