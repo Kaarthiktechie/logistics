@@ -145,7 +145,10 @@ class RD_BrownBillingJob(Document):
                 self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
                 
         sales_order = self.new_sales_order(self.items)
-        sales_order.insert()
+        if sales_order:
+            frappe.throw("Sales Order is Empty")
+        else:
+            sales_order.insert()
     
     def get_rent_amount(self, rent_amount):
         self.cumulative_rent_amount += int(rent_amount)

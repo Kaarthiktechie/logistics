@@ -40,7 +40,10 @@ class BillingJob(Document):
             self.bill_vehicle(vehicle)
         print(self.items)
         sales_order = self.new_sales_order(self.items)
-        sales_order.insert()
+        if sales_order:
+            frappe.throw("Sales Order is Empty")
+        else:
+            sales_order.insert()
 
     def get_price(self):
         item_code = "TRANSPORT CHARGES - MONTHLY"
