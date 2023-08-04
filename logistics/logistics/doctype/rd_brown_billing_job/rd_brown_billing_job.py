@@ -72,23 +72,30 @@ class RD_BrownBillingJob(Document):
     def vehicle_details(self, truck_size):
         mileage = frappe.db.get_list("Mileage", 
                                 filters = { "truck_size": ['=', truck_size]},
-                                fields=["mileage"])[0]
-        # print("Tehfuhsdkhfbjsdkfh", vehicle_details.mileage)
-        return mileage
+                                fields=["mileage"])
+        if mileage:
+            return mileage[0]
+        else:
+            return None
+        
     def vehicle_truck_size(self, truck_no):
         truck_size = None
         truck_size = frappe.db.get_list("Asset", 
                                         filters= {"asset_name": [ "=", truck_no]},
-                                        fields = ["truck_size"])[0]
-        return truck_size.truck_size
+                                        fields = ["truck_size"])
+        if truck_size:
+            truck_size_first = truck_size[0]
+            return truck_size_first.truck_size
+        else:
+            return None
 
     def rd_brown(self):
         diesel_average_rate = self.get_diesel_average_rate()
         if diesel_average_rate == None:
             frappe.throw("Diesel Details Not Found")
-        self.item_price = self.get_price()
-        if self.item_price == None:
-            frappe.throw("Item Price Details Not Found")
+        # self.item_price = self.get_price()
+        # if self.item_price == None:
+        #     frappe.throw("Item Price Details Not Found")
         vehicles = self.get_vehicles()
         if vehicles == None:
             frappe.throw("Vehicle Details Not Found")
@@ -139,7 +146,10 @@ class RD_BrownBillingJob(Document):
     
     def get_rent_amount(self, rent_amount):
         self.cumulative_rent_amount += int(rent_amount)
-        return self.cumulative_rent_amount
+        if self.cumulative_rent_amount:
+            return self.cumulative_rent_amount
+        else:
+            return 0
 
     def get_diesel_average_rate (self):
         i = 0
@@ -155,7 +165,10 @@ class RD_BrownBillingJob(Document):
             cumulative_diesel_rate += daily_diesel_rate.diesel_rate
             i +=1
         diesel_average_rate = (cumulative_diesel_rate/i) 
-        return diesel_average_rate
+        if diesel_average_rate:
+            return diesel_average_rate
+        else:
+            return None
     
     def get_toll_charges(self, vehicle):
         toll_charges_with_date =[]
@@ -203,9 +216,10 @@ class RD_BrownBillingJob(Document):
             },
             fields=['price_list', 'load_date','original_truck_no', 'truck_no',"total_freight",'total_freight', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
             order_by ='ref_no asc')
-        # print("trips_value", trips)
-
-        return trips
+        if trips:
+            return trips
+        else:
+            return None
 
     def new_sales_order(self, items):
         company = frappe.defaults.get_user_default("Company") # need to change
