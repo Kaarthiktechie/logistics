@@ -148,13 +148,21 @@ class RD_BrownBillingJob(Document):
         return diesel_average_rate
     
     def get_toll_charges(self, vehicle):
-        tollcharges = frappe.db.get_list("Toll Charge", filters={
+        toll_charges_with_date =[]
+        if vehicle.original_truck_no == None:
+            vehicle.original_truck_no = vehicle.truck_no
+        tollcharges = frappe.db.get_list("Toll Charges", filters={
             "truck_no": vehicle.original_truck_no,
             "customer" : self.customer
-        },fields=["amount"])
+        },fields=["amount","transaction_date_time"])
         if tollcharges:
             for every_toll_charge in tollcharges:
-                self.cumulative_toll_charges += every_toll_charge.amount
+                test = str(every_toll_charge.transaction_date_time).split(" ")[0]
+                if str(every_toll_charge.transaction_date_time).split(" ")[0] >= self.bill_from_date and str(every_toll_charge.transaction_date_time).split(" ")[0] <= self.bill_to_date :
+                    toll_charges_with_date.append(every_toll_charge.amount)
+        if toll_charges_with_date:
+            for every_toll_charges_with_date in toll_charges_with_date:
+                self.cumulative_toll_charges += int(every_toll_charges_with_date)
             return self.cumulative_toll_charges
         else:
             self.cumulative_toll_charges = 0

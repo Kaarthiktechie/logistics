@@ -98,7 +98,6 @@ class TripBillingJob(Document):
             cumulative_km += trip.running_km
             print("+", trip.truck_no, trip.load_date, trip.location, trip.running_km, cumulative_km)
             excess_trips.append(trip)
-
         return excess_trips
     
     def get_total_kms(self, cumulative_km, trip):
@@ -108,13 +107,21 @@ class TripBillingJob(Document):
         return self.cumulative_km , self.cumulative_toll_charges
     
     def get_toll_charges(self, vehicle):
+        toll_charges_with_date =[]
+        if vehicle.original_truck_no == None:
+            vehicle.original_truck_no = vehicle.truck_no
         tollcharges = frappe.db.get_list("Toll Charges", filters={
-            "truck_no": vehicle.truck_no,
+            "truck_no": vehicle.original_truck_no,
             "customer" : self.customer
-        },fields=["amount"])
+        },fields=["amount","transaction_date_time"])
         if tollcharges:
             for every_toll_charge in tollcharges:
-                self.cumulative_toll_charges += int(every_toll_charge.amount)
+                test = str(every_toll_charge.transaction_date_time).split(" ")[0]
+                if str(every_toll_charge.transaction_date_time).split(" ")[0] >= self.bill_from_date and str(every_toll_charge.transaction_date_time).split(" ")[0] <= self.bill_to_date :
+                    toll_charges_with_date.append(every_toll_charge.amount)
+        if toll_charges_with_date:
+            for every_toll_charges_with_date in toll_charges_with_date:
+                self.cumulative_toll_charges += int(every_toll_charges_with_date)
             return self.cumulative_toll_charges
         else:
             self.cumulative_toll_charges = 0
