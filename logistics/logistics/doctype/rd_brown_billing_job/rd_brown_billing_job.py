@@ -84,7 +84,11 @@ class RD_BrownBillingJob(Document):
 
     def rd_brown(self):
         diesel_average_rate = self.get_diesel_average_rate()
+        if diesel_average_rate == None:
+            frappe.throw("Diesel Details Not Found")
         self.item_price = self.get_price()
+        if self.item_price == None:
+            frappe.throw("Item Price Details Not Found")
         vehicles = self.get_vehicles()
         if vehicles == None:
             frappe.throw("Vehicle Details Not Found")
@@ -96,10 +100,14 @@ class RD_BrownBillingJob(Document):
             self.cumulative_rent_amount = 0
             print(vehicle.truck_no)
             truck_size = self.vehicle_truck_size(vehicle.truck_no)
+            if truck_size == None:
+                frappe.throw("Truck Size Details Not Found")
             mileage = self.vehicle_details(truck_size)
+            if mileage == None:
+                frappe.throw("Mileage Details Not Found")
             trips = self.get_trips(vehicle)
             if trips == None:
-                frappe.throw("Trips Not Found")
+                frappe.throw("Tripsheet Not Found")
             for trip in trips:
                 self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
                 if trip.original_truck_no not in self.original_truck_no:

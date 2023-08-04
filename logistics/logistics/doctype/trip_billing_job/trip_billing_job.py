@@ -89,7 +89,9 @@ class TripBillingJob(Document):
             self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
     
     def get_assorted_trips(self, vehicle): 
-        trips = self.get_trips(vehicle)  
+        trips = self.get_trips(vehicle)
+        if trips == None:
+            frappe.throw("Tripsheet Not Found")  
         cumulative_km = 0
         excess_trips = []
 
