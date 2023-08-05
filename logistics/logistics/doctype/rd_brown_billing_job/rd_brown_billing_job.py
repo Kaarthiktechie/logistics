@@ -146,9 +146,9 @@ class RD_BrownBillingJob(Document):
                 
         sales_order = self.new_sales_order(self.items)
         if sales_order:
-            frappe.throw("Sales Order is Empty")
-        else:
             sales_order.insert()
+        else:
+            frappe.throw("Sales Order is Empty")
     
     def get_rent_amount(self, rent_amount):
         self.cumulative_rent_amount += int(rent_amount)
