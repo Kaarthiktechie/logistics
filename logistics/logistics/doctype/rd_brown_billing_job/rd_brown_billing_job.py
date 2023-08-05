@@ -65,7 +65,7 @@ class RD_BrownBillingJob(Document):
                 'load_date': ['<=', self.bill_to_date]
                 # 'truck_no':  ['=', self.truck_no]
             },
-            fields=['distinct truck_no as truck_no',"original_truck_no"],
+            fields=['distinct truck_no as truck_no',"original_truck_no","id"],
             group_by='truck_no')
         if vehicles:
             return vehicles
@@ -103,6 +103,8 @@ class RD_BrownBillingJob(Document):
         if vehicles == None:
             frappe.throw("Vehicle Details Not Found")
         for vehicle in vehicles:
+            if vehicle.truck_no == None:
+                frappe.throw("Truck No not found on Tripsheet"+" "+vehicle.id)
             self.cumulative_toll_charges = 0
             self.cumulative_toll_charges = self.get_toll_charges(vehicle)
             self.original_truck_no.clear()
@@ -168,7 +170,7 @@ class RD_BrownBillingJob(Document):
         )
         
         for daily_diesel_rate in total_diesel_rate:
-            cumulative_diesel_rate += daily_diesel_rate.diesel_rate
+            cumulative_diesel_rate += int(daily_diesel_rate.diesel_rate)
             i +=1
         diesel_average_rate = (cumulative_diesel_rate/i) 
         if diesel_average_rate:

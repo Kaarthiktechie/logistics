@@ -32,6 +32,8 @@ class BillingJob(Document):
         if vehicles == None:
             frappe.throw("Vehicle Details Not Found")
         for vehicle in vehicles:
+            if vehicle.truck_no == None:
+                frappe.throw("Truck No not found on Tripsheet"+" "+vehicle.id)
             self.original_truck_no.clear()
             self.cumulative_toll_charges = 0
             self.cumulative_loading_unloading_charges = 0
@@ -78,7 +80,7 @@ class BillingJob(Document):
                 'load_date': ['<=', self.bill_to_date]
                 # 'truck_no':  ['=', self.truck_no]
             },
-            fields=['distinct truck_no as truck_no',"original_truck_no"],
+            fields=['distinct truck_no as truck_no',"original_truck_no","id"],
             group_by='truck_no')
         if vehicles:
             return vehicles
