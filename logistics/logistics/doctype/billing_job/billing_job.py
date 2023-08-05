@@ -74,7 +74,7 @@ class BillingJob(Document):
         vehicles = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
-                # 'price_list':["=", self.price_list], 
+                'price_list':["=", self.price_list], 
                 #'location' : ['=', self.item_name],
                 'load_date': ['>=', self.bill_from_date],
                 'load_date': ['<=', self.bill_to_date]
