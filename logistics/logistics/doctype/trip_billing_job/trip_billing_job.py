@@ -74,7 +74,10 @@ class TripBillingJob(Document):
             },
             fields=['distinct truck_no as truck_no',"original_truck_no","ref_no"],
             group_by='truck_no')
-        return vehicles
+        if vehicles:
+            return vehicles
+        else:
+            return None
     
     
     def bill_vehicle(self, vehicle):
