@@ -136,8 +136,8 @@ class BillingJob(Document):
         excess_trips = []
 
         for trip in trips:
-            if trip.original_truck_no == None:#have to include original truck no in tripsheet 
-                trip.original_truck_no = trip.truck_no# have to include original truck no in tripsheet 
+            # if trip.original_truck_no == None:#have to include original truck no in tripsheet 
+            #     trip.original_truck_no = trip.truck_no# have to include original truck no in tripsheet 
             if trip.original_truck_no not in self.original_truck_no:
                 self.original_truck_no.append(trip.original_truck_no)
             # self.cumulative_toll_charges = self.get_toll_charges(vehicle)
