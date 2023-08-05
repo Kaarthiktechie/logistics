@@ -91,8 +91,8 @@ class TripBillingJob(Document):
                 self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route))
         if self.cumulative_toll_charges > 0:
            self.add_item("TOLL_CHARGES", "TOLL_CHARGES", vehicle.truck_no, 1, self.cumulative_toll_charges)
-        if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
-            self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
+        # if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
+        #     self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
         if self.cumulative_loading_unloading_charges > 0:
             self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
     
