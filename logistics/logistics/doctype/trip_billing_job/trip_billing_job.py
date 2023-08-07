@@ -86,6 +86,7 @@ class TripBillingJob(Document):
         print("Cumulative_Km", cumulative_km)
         print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
+        cost_center = (f'{vehicle.original_truck_no} - DL ')
 
         if excess_trips:
             excess_routes = list(map(lambda t:t.location, excess_trips))
@@ -94,13 +95,13 @@ class TripBillingJob(Document):
                 print("QTY", excess_routes.count(excess_route))
                 item = "TRANSPORT CHARGES - TRIPS"
                 # print(excess_route)
-                self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route))
+                self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route),cost_center)
         if self.cumulative_toll_charges > 0:
-           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", vehicle.truck_no, 1, self.cumulative_toll_charges)
+           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center)
         # if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
         #     self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
         if self.cumulative_loading_unloading_charges > 0:
-            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
+            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 ,cost_center)
         
         print("***************************************************Next vehicle********************************************")
     
@@ -191,7 +192,7 @@ class TripBillingJob(Document):
             # "selling_price_list": "Standard S"
         })
         return sales_order
-    def add_item(self, code, name, description, qty, rate):
+    def add_item(self, code, name, description, qty, rate, cost_center):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -202,9 +203,10 @@ class TripBillingJob(Document):
             "conversion_factor": "1",
             "qty": qty,
             "rate": rate,
-            "doc_type": "Sales Order Item"
+            "doc_type": "Sales Order Item",
+            "cost_center": cost_center
         })    
-    def add_item_auto_price(self, code, name, description, qty):
+    def add_item_auto_price(self, code, name, description, qty, cost_center):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -212,5 +214,6 @@ class TripBillingJob(Document):
             "delivery_date": "2023-07-15",
             "description": description,
             "qty": qty,
-            "doc_type": "Sales Order Item"
+            "doc_type": "Sales Order Item",
+            "cost_center": cost_center
         })            

@@ -102,14 +102,15 @@ class BillingJob(Document):
         print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
         print("***************************************************Next vehicle********************************************")
+        cost_center = (f'{vehicle.original_truck_no} - DL ')
         if on_contract_trips:
             item = "TRANSPORT CHARGES - MONTHLY"
-            self.add_item(item, item, original_truck_no_string, 1,self.item_price.price_list_rate)
+            self.add_item(item, item, original_truck_no_string, 1,self.item_price.price_list_rate, cost_center)
             # print (item)
             #print("vehicle.truck_no : ",  vehicle.truck_no)
         if crossover_excess_km > 0:
             item = "TRANSPORT CHARGES - KM"
-            self.add_item_auto_price(item, item,original_truck_no_string, crossover_excess_km)
+            self.add_item_auto_price(item, item,original_truck_no_string, crossover_excess_km,cost_center)
             # print("crossover_excess_km : ", crossover_excess_km)
         if excess_trips:
             excess_km = 0
@@ -117,20 +118,20 @@ class BillingJob(Document):
                 for excess_trip in excess_trips:
                     excess_km += excess_trip.running_km
                 item = "TRANSPORT CHARGES - KM"
-                self.add_item_auto_price(item, item,original_truck_no_string, excess_km)
+                self.add_item_auto_price(item, item,original_truck_no_string, excess_km,cost_center)
             else:
                 excess_routes = list(map(lambda t:t.location, excess_trips))
                 for excess_route in set(excess_routes):
                     item = "TRANSPORT CHARGES - TRIPS"
                     # print(excess_route)
-                    self.add_item_auto_price(excess_route, item,original_truck_no_string, excess_routes.count(excess_route))
+                    self.add_item_auto_price(excess_route, item,original_truck_no_string, excess_routes.count(excess_route), cost_center)
         
         if self.cumulative_toll_charges > 0:
-           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", original_truck_no_string, 1, self.cumulative_toll_charges)
+           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", original_truck_no_string, 1, self.cumulative_toll_charges, cost_center)
         if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
-            self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no +" "+"500" ,len(self.original_truck_no))
+            self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no +" "+"500" ,len(self.original_truck_no),cost_center )
         if self.cumulative_loading_unloading_charges > 0:
-            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
+            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1, cost_center )
     
     def get_assorted_trips(self, vehicle): 
         trips = self.get_trips(vehicle)
@@ -238,7 +239,7 @@ class BillingJob(Document):
             # "selling_price_list": "Standard S"
         })
         return sales_order
-    def add_item(self, code, name, description, qty, rate):
+    def add_item(self, code, name, description, qty, rate, cost_center):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -249,9 +250,10 @@ class BillingJob(Document):
             "conversion_factor": "1",
             "qty": qty,
             "rate": rate,
-            "doc_type": "Sales Order Item"
+            "doc_type": "Sales Order Item",
+            "cost_center": cost_center
         })    
-    def add_item_auto_price(self, code, name, description, qty):
+    def add_item_auto_price(self, code, name, description, qty, cost_center):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -259,7 +261,8 @@ class BillingJob(Document):
             "delivery_date": "2023-07-15",
             "description": description,
             "qty": qty,
-            "doc_type": "Sales Order Item"
+            "doc_type": "Sales Order Item",
+            "cost_center": cost_center
         })            
 
 
