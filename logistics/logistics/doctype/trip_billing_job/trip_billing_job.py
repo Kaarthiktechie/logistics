@@ -32,7 +32,7 @@ class TripBillingJob(Document):
             self.cumulative_loading_unloading_charges = 0
             self.cumulative_toll_charges = self.get_toll_charges(vehicle)
             self.bill_vehicle(vehicle)
-        print(self.items)
+        # print(self.items)
         sales_order = self.new_sales_order(self.items)
         if sales_order:
             sales_order.insert()
@@ -81,13 +81,19 @@ class TripBillingJob(Document):
     
     
     def bill_vehicle(self, vehicle):
-        excess_trips = self.get_assorted_trips(vehicle)
+        excess_trips, cumulative_km = self.get_assorted_trips(vehicle)
+        print("Vehicle_Truck_no", vehicle.truck_no)
+        print("Cumulative_Km", cumulative_km)
+        print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
+        print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
 
         if excess_trips:
             excess_routes = list(map(lambda t:t.location, excess_trips))
             for excess_route in set(excess_routes):
+                print("Route", excess_route)
+                print("QTY", excess_routes.count(excess_route))
                 item = "TRANSPORT CHARGES - TRIPS"
-                print(excess_route)
+                # print(excess_route)
                 self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route))
         if self.cumulative_toll_charges > 0:
            self.add_item("TOLL_CHARGES", "TOLL_CHARGES", vehicle.truck_no, 1, self.cumulative_toll_charges)
@@ -95,6 +101,8 @@ class TripBillingJob(Document):
         #     self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
         if self.cumulative_loading_unloading_charges > 0:
             self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 )
+        
+        print("***************************************************Next vehicle********************************************")
     
     def get_assorted_trips(self, vehicle): 
         trips = self.get_trips(vehicle)
@@ -107,17 +115,17 @@ class TripBillingJob(Document):
             if trips == None:
                 frappe.throw("Trips Not Found")
             self.trip_count += 1
-            print(self.trip_count)
+            # print(self.trip_count)
             self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
             cumulative_km += trip.running_km
-            print("+", trip.truck_no, trip.load_date, trip.location, trip.running_km, cumulative_km)
+            # print("+", trip.truck_no, trip.load_date, trip.location, trip.running_km, cumulative_km)
             excess_trips.append(trip)
-        return excess_trips
+        return excess_trips, cumulative_km
     
     def get_total_kms(self, cumulative_km, trip):
         trip_km =  int(trip.closing_km) - int(trip.starting_km)
         self.cumulative_km += trip_km
-        print("cumulative_km: ", self.cumulative_km)
+        # print("cumulative_km: ", self.cumulative_km)
         return self.cumulative_km , self.cumulative_toll_charges
     
     def get_toll_charges(self, vehicle):

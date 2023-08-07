@@ -27,7 +27,7 @@ class BillingJob(Document):
         self.item_price = self.get_price()
         if self.item_price == None:
             frappe.throw("Pricing Details Not Found")
-        print("* Item Price : ", self.item_price.packing_unit, self.item_price.price_list_rate, self.item_price.excess_billing_type)
+        # print("* Item Price : ", self.item_price.packing_unit, self.item_price.price_list_rate, self.item_price.excess_billing_type)
         vehicles = self.get_vehicles()
         if vehicles == None:
             frappe.throw("Vehicle Details Not Found")
@@ -40,7 +40,7 @@ class BillingJob(Document):
             self.food_charges = 0
             self.cumulative_toll_charges = self.get_toll_charges(vehicle)
             self.bill_vehicle(vehicle)
-        print(self.items)
+        # print(self.items)
         sales_order = self.new_sales_order(self.items)
         if sales_order:
             sales_order.insert()
@@ -88,13 +88,20 @@ class BillingJob(Document):
             return None
 
     def bill_vehicle(self, vehicle):
-        on_contract_trips, excess_trips, crossover_excess_km = self.get_assorted_trips(vehicle)
+        on_contract_trips, excess_trips, crossover_excess_km, cumulative_km = self.get_assorted_trips(vehicle)
         original_truck_no_string = ""
         for every_truck_no in self.original_truck_no:
             if every_truck_no == self.original_truck_no[-1]:
                 original_truck_no_string += str(every_truck_no)
             else:
                 original_truck_no_string += str(every_truck_no)+","
+        print("Vehicle_Truck_no", vehicle.truck_no)
+        print("Original_Truck_No", original_truck_no_string)
+        print("Cumulative_Km", cumulative_km)
+        print("CrossOver_Excess_Km", crossover_excess_km)
+        print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
+        print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
+        print("***************************************************Next vehicle********************************************")
         if on_contract_trips:
             item = "TRANSPORT CHARGES - MONTHLY"
             self.add_item(item, item, original_truck_no_string, 1,self.item_price.price_list_rate)
@@ -115,7 +122,7 @@ class BillingJob(Document):
                 excess_routes = list(map(lambda t:t.location, excess_trips))
                 for excess_route in set(excess_routes):
                     item = "TRANSPORT CHARGES - TRIPS"
-                    print(excess_route)
+                    # print(excess_route)
                     self.add_item_auto_price(excess_route, item,original_truck_no_string, excess_routes.count(excess_route))
         
         if self.cumulative_toll_charges > 0:
@@ -145,12 +152,12 @@ class BillingJob(Document):
             self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
             crossover_trip = None
             cumulative_km += trip.running_km
-            print("+", trip.truck_no, trip.load_date, trip.location, trip.running_km, cumulative_km)
+            # print("+", trip.truck_no, trip.load_date, trip.location, trip.running_km, cumulative_km)
 
             if cumulative_km >= int(limit) and crossover_excess_km == 0:
                 crossover_excess_km = cumulative_km - int(limit)
                 crossover_trip = "Yes"
-                print("crossover_excess_km : " , crossover_excess_km)
+                # print("crossover_excess_km : " , crossover_excess_km)
 
             if crossover_excess_km > 0 and crossover_trip == None:
                 excess_trips.append(trip)
@@ -158,7 +165,7 @@ class BillingJob(Document):
             else:
                 on_contract_trips.append(trip)
 
-        return on_contract_trips, excess_trips, crossover_excess_km
+        return on_contract_trips, excess_trips, crossover_excess_km, cumulative_km
     
     
     def get_food_charges(self, trip):

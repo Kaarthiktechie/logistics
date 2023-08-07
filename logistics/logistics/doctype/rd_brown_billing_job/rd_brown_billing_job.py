@@ -110,11 +110,11 @@ class RD_BrownBillingJob(Document):
             self.original_truck_no.clear()
             cumulative_km = 0
             self.cumulative_rent_amount = 0
-            print(vehicle.truck_no)
             truck_size = self.vehicle_truck_size(vehicle.truck_no)
             if truck_size == None:
                 frappe.throw("Truck Size Details Not Found")
             mileage = self.vehicle_details(truck_size)
+            print("mileage of "+ vehicle.truck_no + "=", mileage.mileage)
             if mileage == None:
                 frappe.throw("Mileage Details Not Found")
             trips = self.get_trips(vehicle)
@@ -127,7 +127,7 @@ class RD_BrownBillingJob(Document):
                 cumulative_rent_amount = self.get_rent_amount(trip.total_freight)
                 cumulative_km = self.get_total_kms(cumulative_km, trip)
             total_amount_wihout_rental = ((cumulative_km/mileage.mileage)*diesel_average_rate)
-            print(cumulative_rent_amount)
+            print("Cumulative_Rent_Amount",cumulative_rent_amount)
             total_amount_with_rental = total_amount_wihout_rental + cumulative_rent_amount
             
             original_truck_no_string = ""
@@ -136,8 +136,14 @@ class RD_BrownBillingJob(Document):
                     original_truck_no_string += str(every_truck_no)
                 else:
                     original_truck_no_string += str(every_truck_no)+","
-                    
-            self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", vehicle.truck_no, 1,total_amount_with_rental)
+            print("Vehicle_Truck_no", vehicle.truck_no)
+            print("Original_Truck_No", original_truck_no_string)
+            print("Diesel_ Price", diesel_average_rate)
+            print("Cumulative_Km", cumulative_km)
+            print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
+            print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
+            print("*****************************************************Next vehicle********************************************")
+            self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", original_truck_no_string, 1,total_amount_with_rental)
         
             if self.cumulative_toll_charges > 0:
                 self.add_item("TOLL_CHARGES", "TOLL_CHARGES", original_truck_no_string, 1, self.cumulative_toll_charges)
@@ -170,7 +176,7 @@ class RD_BrownBillingJob(Document):
         )
         
         for daily_diesel_rate in total_diesel_rate:
-            cumulative_diesel_rate += int(daily_diesel_rate.diesel_rate)
+            cumulative_diesel_rate += float(daily_diesel_rate.diesel_rate)
             i +=1
         diesel_average_rate = (cumulative_diesel_rate/i) 
         if diesel_average_rate:
@@ -207,9 +213,9 @@ class RD_BrownBillingJob(Document):
         
     def get_total_kms(self, cumulative_km, trip):
         trip_km =  int(trip.closing_km) - int(trip.starting_km)
-        print(trip_km)
+        # print("Per Trip Km: ", trip_km)
         cumulative_km += trip_km
-        print("cumulative_km: ", cumulative_km)
+        # print("cumulative_km: ", cumulative_km)
         return cumulative_km 
 
     def get_trips(self, vehicle):
