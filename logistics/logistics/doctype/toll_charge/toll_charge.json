@@ -10,7 +10,8 @@
   "transaction_date_time",
   "truck_no",
   "transaction_description",
-  "amount"
+  "amount",
+  "customer"
  ],
  "fields": [
   {
@@ -32,6 +33,12 @@
    "fieldname": "transaction_date_time",
    "fieldtype": "Data",
    "label": "Transaction Date Time"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
   }
  ],
  "index_web_pages_for_search": 1,
