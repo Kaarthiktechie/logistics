@@ -102,7 +102,7 @@ class BillingJob(Document):
         print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
         print("***************************************************Next vehicle********************************************")
-        cost_center = (f'{vehicle.original_truck_no} - DL ')
+        cost_center = (f'{vehicle.truck_no} - DL ')
         if on_contract_trips:
             item = "TRANSPORT CHARGES - MONTHLY"
             self.add_item(item, item, original_truck_no_string, 1,self.item_price.price_list_rate, cost_center)
@@ -177,8 +177,8 @@ class BillingJob(Document):
     
     def get_toll_charges(self, vehicle):
         toll_charges_with_date =[]
-        if vehicle.original_truck_no == None:
-            vehicle.original_truck_no = vehicle.truck_no
+        # if vehicle.original_truck_no == None:
+        #     vehicle.original_truck_no = vehicle.truck_no
         tollcharges = frappe.db.get_list("Toll Charge", filters={
             "truck_no": vehicle.original_truck_no,
             "customer" : self.customer

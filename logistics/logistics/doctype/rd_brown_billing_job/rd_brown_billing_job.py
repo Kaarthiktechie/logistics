@@ -143,7 +143,7 @@ class RD_BrownBillingJob(Document):
             print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
             print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
             print("*****************************************************Next vehicle********************************************")
-            cost_center = (f'{vehicle.original_truck_no} - DL ')
+            cost_center = (f'{vehicle.truck_no} - DL ')
             
             self.add_item("TRANSPORT CHARGES", "TRANSPORT CHARGES", original_truck_no_string, 1,total_amount_with_rental,cost_center)
         
