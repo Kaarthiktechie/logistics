@@ -95,6 +95,7 @@ class TripBillingJob(Document):
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
         cost_center = (f'{vehicle.truck_no} - DL ')
 
+
         if excess_trips:
             excess_routes = list(map(lambda t:t.location, excess_trips))
             for excess_route in set(excess_routes):
