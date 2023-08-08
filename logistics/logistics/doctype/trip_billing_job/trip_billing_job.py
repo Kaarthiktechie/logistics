@@ -15,6 +15,7 @@ class TripBillingJob(Document):
         self.trip_count  = 0
         self.item_price = None
         
+        
     def validate(self):
         # ToDo add validations
         self.init()
@@ -29,6 +30,8 @@ class TripBillingJob(Document):
             if vehicle.truck_no == None:
                 frappe.throw("Truck No not found on Tripsheet"+" "+vehicle.ref_no)
             self.cumulative_toll_charges = 0
+            self.halting_charges = 0
+            self.halt_days = 0
             self.cumulative_loading_unloading_charges = 0
             self.cumulative_toll_charges = self.get_toll_charges(vehicle)
             self.bill_vehicle(vehicle)
@@ -63,17 +66,21 @@ class TripBillingJob(Document):
             return None
 
     def get_vehicles(self):
+        vehicles_with_date=[]
         vehicles = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
                 'price_list':["=", "Standard Selling"], 
                 #'location' : ['=', self.item_name],
-                'load_date': ['>=', self.bill_from_date],
-                'load_date': ['<=', self.bill_to_date]
+                # 'load_date': ['>=', self.bill_from_date],
+                # 'load_date': ['<=', self.bill_to_date]
                 # 'truck_no':  ['=', self.truck_no]
             },
-            fields=['distinct truck_no as truck_no',"original_truck_no","ref_no"],
+            fields=['distinct truck_no as truck_no',"original_truck_no","ref_no", "load_date",],
             group_by='truck_no')
+        # for every_vehicle in vehicles:
+        #     if str(every_vehicle.load_date) <= self.bill_to_date:
+        #         vehicles_with_date.append(every_vehicle)
         if vehicles:
             return vehicles
         else:
@@ -81,12 +88,13 @@ class TripBillingJob(Document):
     
     
     def bill_vehicle(self, vehicle):
-        excess_trips, cumulative_km = self.get_assorted_trips(vehicle)
+        excess_trips, cumulative_km, self.halting_charges, halt_days = self.get_assorted_trips(vehicle)
         print("Vehicle_Truck_no", vehicle.truck_no)
         print("Cumulative_Km", cumulative_km)
         print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
-        cost_center = (f'{vehicle.truck_no} - DL ')
+        cost_center = (f'{vehicle.truck_no} - DLPL')
+
 
         if excess_trips:
             excess_routes = list(map(lambda t:t.location, excess_trips))
@@ -97,7 +105,9 @@ class TripBillingJob(Document):
                 # print(excess_route)
                 self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route),cost_center)
         if self.cumulative_toll_charges > 0:
-           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center)
+            self.add_item("TOLL_CHARGES", "TOLL_CHARGES", vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center)
+        if self.halting_charges > 0 :
+            self.add_item("HALTING_CHARGE", "HALTING_CHARGE", vehicle.truck_no,halt_days, self.halting_charges, cost_center )
         # if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
         #     self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
         if self.cumulative_loading_unloading_charges > 0:
@@ -106,14 +116,15 @@ class TripBillingJob(Document):
         print("***************************************************Next vehicle********************************************")
     
     def get_assorted_trips(self, vehicle): 
-        trips = self.get_trips(vehicle)
-        if trips == None:
+        trips_with_date = self.get_trips(vehicle)
+        if trips_with_date == None:
             frappe.throw("Tripsheet Not Found")  
         cumulative_km = 0
         excess_trips = []
+        excess_trips.clear()
 
-        for trip in trips:
-            if trips == None:
+        for trip in trips_with_date:
+            if trip == None:
                 frappe.throw("Trips Not Found")
             self.trip_count += 1
             # print(self.trip_count)
@@ -121,7 +132,10 @@ class TripBillingJob(Document):
             cumulative_km += trip.running_km
             # print("+", trip.truck_no, trip.load_date, trip.location, trip.running_km, cumulative_km)
             excess_trips.append(trip)
-        return excess_trips, cumulative_km
+            if trip.halt_days > 0:
+                self.halting_charges = int(trip.halting_charges)
+                self.halt_days += trip.halt_days
+        return excess_trips, cumulative_km, self.halting_charges, self.halt_days
     
     def get_total_kms(self, cumulative_km, trip):
         trip_km =  int(trip.closing_km) - int(trip.starting_km)
@@ -157,20 +171,24 @@ class TripBillingJob(Document):
         return self.cumulative_loading_unloading_charges
 
     def get_trips(self, vehicle):
+        trips_with_date =[]
         trips = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
                 'price_list': ['=', "Standard Selling"],
                 # 'route_name' : ['=', self.item_name],
                 'truck_no' : ['=', vehicle.truck_no],
-                'load_date': ['>=', self.bill_from_date],
-                'load_date': ['<=', self.bill_to_date]
+                'load_date': ['>=', self.bill_from_date]
             },
-            fields=['price_list', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
+            fields=['price_list', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver',"halting_charges", "ref_no" ],
             order_by ='ref_no asc')
         # print("trips_value", trips)
+        for every_trip in trips:
+            if str(every_trip.load_date) <= self.bill_to_date:
+                trips_with_date.append(every_trip)
        
-        return trips
+        if trips_with_date: 
+            return trips_with_date
     
     def new_sales_order(self, items):
         company = frappe.defaults.get_user_default("Company") # need to change
@@ -217,3 +235,5 @@ class TripBillingJob(Document):
             "doc_type": "Sales Order Item",
             "cost_center": cost_center
         })            
+
+

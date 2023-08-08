@@ -30,7 +30,8 @@
   "freight_received",
   "billing_truck_no",
   "original_truck_no",
-  "loading_and_unloading_charges"
+  "loading_and_unloading_charges",
+  "halting_charges"
  ],
  "fields": [
   {
@@ -149,7 +150,12 @@
    "fieldname": "loading_and_unloading_charges",
    "fieldtype": "Int",
    "label": "Loading And Unloading Charges"
-  }
+  },
+  {
+    "fieldname": "halting_charges",
+    "fieldtype": "Data",
+    "label": "Halting Charges Per Day"
+   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
