@@ -118,7 +118,8 @@ class RD_BrownBillingJob(Document):
             if mileage == None:
                 frappe.throw("Mileage Details Not Found")
             trips = self.get_trips(vehicle)
-            
+            if trips == None:
+                frappe.throw("Tripsheet Not Found")
             for trip in trips:
                 self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
                 if trip.original_truck_no not in self.original_truck_no:
