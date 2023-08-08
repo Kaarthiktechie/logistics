@@ -154,7 +154,7 @@
   {
     "fieldname": "halting_charges",
     "fieldtype": "Data",
-    "label": "Per Day Halting Charges"
+    "label": "Halting Charges Per Day"
    }
  ],
  "index_web_pages_for_search": 1,
