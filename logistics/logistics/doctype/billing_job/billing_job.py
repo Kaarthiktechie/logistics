@@ -135,8 +135,7 @@ class BillingJob(Document):
     
     def get_assorted_trips(self, vehicle): 
         trips = self.get_trips(vehicle)
-        if trips == None:
-            frappe.throw("Trips Not Found")  
+         
         limit = self.item_price.km_limit
         cumulative_km = 0
         crossover_excess_km = 0
@@ -238,7 +237,7 @@ class BillingJob(Document):
             "shipping_address": "No 4, Sengunthapuram",
             "billing_address": "No 4, Sengunthapuram",
             "items": items,
-            "set_warehouse": "Stores - DLPL"
+            "set_warehouse": "Stores - DL"
             # "selling_price_list": "Standard S"
         })
         return sales_order
