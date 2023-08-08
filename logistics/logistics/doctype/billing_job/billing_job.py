@@ -76,8 +76,8 @@ class BillingJob(Document):
                 'customer': ['=', self.customer],
                 'price_list':["=", self.price_list], 
                 #'location' : ['=', self.item_name],
-                'load_date': ['>=', self.bill_from_date],
-                'load_date': ['<=', self.bill_to_date]
+                # 'load_date': ['>=', self.bill_from_date],
+                # 'load_date': ['<=', self.bill_to_date]
                 # 'truck_no':  ['=', self.truck_no]
             },
             fields=['distinct truck_no as truck_no',"original_truck_no","ref_no"],
@@ -203,6 +203,7 @@ class BillingJob(Document):
         return self.cumulative_loading_unloading_charges
 
     def get_trips(self, vehicle):
+        trips_with_date =[]
         trips = frappe.db.get_list('Tripsheets',
             filters={
                 'customer': ['=', self.customer],
@@ -214,10 +215,12 @@ class BillingJob(Document):
             },
             fields=['price_list','original_truck_no', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
             order_by = 'ref_no asc')
-        if trips:
-            return trips
-        else:
-            return None
+        for every_trip in trips:
+            if str(every_trip.load_date) <= self.bill_to_date:
+                trips_with_date.append(every_trip)
+       
+        if trips_with_date: 
+            return trips_with_date
     
     def new_sales_order(self, items):
         company = frappe.defaults.get_user_default("Company") # need to change
