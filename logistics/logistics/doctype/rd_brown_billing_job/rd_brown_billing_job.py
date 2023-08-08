@@ -253,7 +253,7 @@ class RD_BrownBillingJob(Document):
             "shipping_address": "No 4, Sengunthapuram",
             "billing_address": "No 4, Sengunthapuram",
             "items": items,
-            "set_warehouse": "Stores - DL"
+            "set_warehouse": "Stores - DLPL"
             # "selling_price_list": "Standard S"
         })
         return sales_order
