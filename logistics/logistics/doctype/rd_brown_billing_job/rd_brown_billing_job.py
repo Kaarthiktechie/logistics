@@ -41,7 +41,7 @@ class RD_BrownBillingJob(Document):
                     "customer": self.customer,
                     # "price_list" : self.price_list,
                     "item_code" : item_code ,
-                   "valid_upto" : ['between',[self.bill_from_date,self.bill_to_date]]
+                   "valid_from" : [">=", self.bill_from_date]
                     },
                     fields=['packing_unit', 'price_list_rate'])
         for every_item_prices in item_prices:
@@ -142,7 +142,8 @@ class RD_BrownBillingJob(Document):
             print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
             print("*****************************************************Next vehicle********************************************")
             cost_center = (f'{vehicle.truck_no} - DLPL')
-            
+            #Todo
+            #Halting_charges for RD_Brown
             item = "TRANSPORT CHARGES"
             hsn_code = self.get_hsn_code(item)
             self.add_item(item, item, original_truck_no_string, 1,total_amount_with_rental,cost_center, hsn_code)

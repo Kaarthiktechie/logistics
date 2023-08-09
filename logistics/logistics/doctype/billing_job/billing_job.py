@@ -34,6 +34,7 @@ class BillingJob(Document):
         for vehicle in vehicles:
             if vehicle.truck_no == None:
                 frappe.throw("Truck No not found on Tripsheet"+" "+vehicle.ref_no)
+            self.halting_charges = 0
             self.original_truck_no.clear()
             self.cumulative_toll_charges = 0
             self.cumulative_loading_unloading_charges = 0
@@ -56,8 +57,8 @@ class BillingJob(Document):
                     "customer": self.customer,
                     "price_list" : self.price_list,
                     "item_code" : item_code ,
-                    "valid_upto" : ['between',[self.bill_from_date,self.bill_to_date]]
-                    # "valid_upto" : [">=", self.bill_to_date]
+                    "valid_from" : [">=", self.bill_from_date]
+                    # "valid_upto" : ["<=", self.bill_to_date]
                     },
                     fields=['packing_unit', 'price_list_rate', 'valid_upto','excess_billing_type',"km_limit"])
         for every_item_prices in item_prices:
@@ -131,6 +132,10 @@ class BillingJob(Document):
                     # print(excess_route)
                     self.add_item_auto_price(excess_route, item,original_truck_no_string, excess_routes.count(excess_route), cost_center, hsn_code)
         
+        if self.halting_charges > 0:
+            item = "HALTING_CHARGE"
+            hsn_code = self.get_hsn_code(item)
+            self.add_item(item, item, vehicle.truck_no, 1, self.halting_charges,cost_center,hsn_code)
         if self.cumulative_toll_charges > 0:
             item = "TOLL_CHARGES"
             hsn_code = self.get_hsn_code(item)
@@ -157,6 +162,9 @@ class BillingJob(Document):
         for trip in trips:
             # if trip.original_truck_no == None:#have to include original truck no in tripsheet 
             #     trip.original_truck_no = trip.truck_no# have to include original truck no in tripsheet 
+            if trip.halting_charges == None:
+                trip.halting_charges = 0
+            self.halting_charges += int(trip.halting_charges)
             if trip.original_truck_no not in self.original_truck_no:
                 self.original_truck_no.append(trip.original_truck_no)
             # self.cumulative_toll_charges = self.get_toll_charges(vehicle)
@@ -232,7 +240,7 @@ class BillingJob(Document):
                 'truck_no' : ['=', vehicle.truck_no],
                 "load_date" : ['between',[self.bill_from_date,self.bill_to_date]]
             },
-            fields=['price_list','original_truck_no', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
+            fields=['price_list','original_truck_no', 'load_date',"ref_no", 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver','halting_charges'],
             order_by = 'ref_no asc')
         if trips:
             return trips
