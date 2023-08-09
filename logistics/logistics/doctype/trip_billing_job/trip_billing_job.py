@@ -49,7 +49,7 @@ class TripBillingJob(Document):
                     "customer": self.customer,
                     "price_list" : "Standard Selling",
                     "item_code" : item_code ,
-                    "valid_from" : [">=", self.bill_from_date]
+                    "valid_from" : ["<=", self.bill_from_date]
                     #"valid_upto" : ["<=", self.bill_to_date]
                     },
                     fields=['packing_unit', 'price_list_rate','valid_upto', 'excess_billing_type',"km_limit"])

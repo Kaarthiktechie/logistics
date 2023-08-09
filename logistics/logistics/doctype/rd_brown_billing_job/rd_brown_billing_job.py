@@ -41,7 +41,7 @@ class RD_BrownBillingJob(Document):
                     "customer": self.customer,
                     # "price_list" : self.price_list,
                     "item_code" : item_code ,
-                   "valid_from" : [">=", self.bill_from_date]
+                   "valid_from" : ["<=", self.bill_from_date]
                     },
                     fields=['packing_unit', 'price_list_rate'])
         for every_item_prices in item_prices:
