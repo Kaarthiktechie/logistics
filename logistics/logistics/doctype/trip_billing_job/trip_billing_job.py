@@ -14,6 +14,7 @@ class TripBillingJob(Document):
         self.cumulative_km = 0
         self.trip_count  = 0
         self.item_price = None
+        self.uom = "Nos"
         
     def validate(self):
         # ToDo add validations
@@ -94,23 +95,24 @@ class TripBillingJob(Document):
                 print("Route", excess_route)
                 print("QTY", excess_routes.count(excess_route))
                 item = "TRANSPORT CHARGES - TRIPS"
+                self.uom = "Trip"
                 hsn_code = self.get_hsn_code(item)
                 # print(excess_route)
-                self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route),cost_center, hsn_code)
+                self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route),cost_center, hsn_code,self.uom)
         if self.cumulative_toll_charges > 0:
             item = "TOLL_CHARGES"
             hsn_code = self.get_hsn_code(item)
-            self.add_item(item, item, vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center,hsn_code)
+            self.add_item(item, item, vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center,hsn_code,self.uom)
         if self.halting_charges > 0:
             item = "HALTING_CHARGE"
             hsn_code = self.get_hsn_code(item)
-            self.add_item(item, item, vehicle.truck_no, 1, self.halting_charges,cost_center,hsn_code)
+            self.add_item(item, item, vehicle.truck_no, 1, self.halting_charges,cost_center,hsn_code,self.uom)
         # if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
         #     self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
         if self.cumulative_loading_unloading_charges > 0:
             item = "LOADING/UNLOADING_CHARGES"
             hsn_code = self.get_hsn_code(item)
-            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 ,cost_center,hsn_code)
+            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 ,cost_center,hsn_code,self.uom)
         
         print("***************************************************Next vehicle********************************************")
     
@@ -215,7 +217,7 @@ class TripBillingJob(Document):
             # "selling_price_list": "Standard S"
         })
         return sales_order
-    def add_item(self, code, name, description, qty, rate, cost_center,hsn_code):
+    def add_item(self, code, name, description, qty, rate, cost_center,hsn_code,uom):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -228,9 +230,10 @@ class TripBillingJob(Document):
             "rate": rate,
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
-            "hsn_sac": hsn_code
+            "hsn_sac": hsn_code,
+            "uom": uom
         })    
-    def add_item_auto_price(self, code, name, description, qty, cost_center,hsn_code):
+    def add_item_auto_price(self, code, name, description, qty, cost_center,hsn_code,uom):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -240,5 +243,6 @@ class TripBillingJob(Document):
             "qty": qty,
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
-            "hsn_sac": hsn_code
+            "hsn_sac": hsn_code,
+            "uom": uom
         })            
