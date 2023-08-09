@@ -86,7 +86,7 @@ class TripBillingJob(Document):
         print("Cumulative_Km", cumulative_km)
         print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
-        cost_center = (f'{vehicle.truck_no} - DLPL')
+        cost_center = (f'{vehicle.truck_no} - DL')
 
         if excess_trips:
             excess_routes = list(map(lambda t:t.location, excess_trips))
@@ -211,7 +211,7 @@ class TripBillingJob(Document):
             "shipping_address": "No 4, Sengunthapuram",
             "billing_address": "No 4, Sengunthapuram",
             "items": items,
-            "set_warehouse": "Stores - DLPL"
+            "set_warehouse": "Stores - DL"
             # "selling_price_list": "Standard S"
         })
         return sales_order
