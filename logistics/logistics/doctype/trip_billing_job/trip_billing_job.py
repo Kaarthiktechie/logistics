@@ -86,7 +86,7 @@ class TripBillingJob(Document):
         print("Cumulative_Km", cumulative_km)
         print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
-        cost_center = (f'{vehicle.truck_no} - DL ')
+        cost_center = (f'{vehicle.truck_no} - DLPL')
 
         if excess_trips:
             excess_routes = list(map(lambda t:t.location, excess_trips))
@@ -94,14 +94,19 @@ class TripBillingJob(Document):
                 print("Route", excess_route)
                 print("QTY", excess_routes.count(excess_route))
                 item = "TRANSPORT CHARGES - TRIPS"
+                hsn_code = self.get_hsn_code(item)
                 # print(excess_route)
-                self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route),cost_center)
+                self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route),cost_center, hsn_code)
         if self.cumulative_toll_charges > 0:
-           self.add_item("TOLL_CHARGES", "TOLL_CHARGES", vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center)
+            item = "TOLL_CHARGES"
+            hsn_code = self.get_hsn_code(item)
+            self.add_item(item, item, vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center,hsn_code)
         # if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
         #     self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
         if self.cumulative_loading_unloading_charges > 0:
-            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 ,cost_center)
+            item = "LOADING/UNLOADING_CHARGES"
+            hsn_code = self.get_hsn_code(item)
+            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 ,cost_center,hsn_code)
         
         print("***************************************************Next vehicle********************************************")
     
@@ -149,6 +154,16 @@ class TripBillingJob(Document):
         else:
             self.cumulative_toll_charges = 0
             return self.cumulative_toll_charges
+        
+    def get_hsn_code(self,item):
+        hsn_code = frappe.db.get_list('Item',
+                                      filters={
+                                          "item_code": item,
+                                      }, fields=['hsn_sac'])
+        if hsn_code:
+            return hsn_code[0].hsn_sac
+        else:
+            return None
     
     def get_loading_charges(self, trip):
         if (trip.loading_charges == None):
@@ -192,7 +207,7 @@ class TripBillingJob(Document):
             # "selling_price_list": "Standard S"
         })
         return sales_order
-    def add_item(self, code, name, description, qty, rate, cost_center):
+    def add_item(self, code, name, description, qty, rate, cost_center,hsn_code):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -204,9 +219,10 @@ class TripBillingJob(Document):
             "qty": qty,
             "rate": rate,
             "doc_type": "Sales Order Item",
-            "cost_center": cost_center
+            "cost_center": cost_center,
+            "hsn_sac": hsn_code
         })    
-    def add_item_auto_price(self, code, name, description, qty, cost_center):
+    def add_item_auto_price(self, code, name, description, qty, cost_center,hsn_code):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -215,5 +231,6 @@ class TripBillingJob(Document):
             "description": description,
             "qty": qty,
             "doc_type": "Sales Order Item",
-            "cost_center": cost_center
+            "cost_center": cost_center,
+            "hsn_sac": hsn_code
         })            
