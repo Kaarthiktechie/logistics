@@ -41,8 +41,7 @@ class RD_BrownBillingJob(Document):
                     "customer": self.customer,
                     # "price_list" : self.price_list,
                     "item_code" : item_code ,
-                    "valid_from" : ["<=", self.bill_from_date]
-                    #"valid_upto" : [">=", self.bill_to_date]
+                   "valid_upto" : ['between',[self.bill_from_date,self.bill_to_date]]
                     },
                     fields=['packing_unit', 'price_list_rate'])
         for every_item_prices in item_prices:
@@ -61,8 +60,7 @@ class RD_BrownBillingJob(Document):
                 'customer': ['=', self.customer],
                 # 'price_list':["=", self.price_list], 
                 #'location' : ['=', self.item_name],
-                'load_date': ['>=', self.bill_from_date],
-                'load_date': ['<=', self.bill_to_date]
+                "load_date" : ['between',[self.bill_from_date,self.bill_to_date]]
                 # 'truck_no':  ['=', self.truck_no]
             },
             fields=['distinct truck_no as truck_no',"original_truck_no","ref_no"],
@@ -243,8 +241,7 @@ class RD_BrownBillingJob(Document):
                 # 'price_list': ['=', self.price_list],
                 # 'route_name' : ['=', self.item_name],
                 'truck_no' : ['=', vehicle.truck_no],
-                'load_date': ['>=', self.bill_from_date],
-                'load_date': ['<=', self.bill_to_date]
+                "load_date" : ['between',[self.bill_from_date,self.bill_to_date]]
             },
             fields=['price_list', 'load_date','original_truck_no', 'truck_no',"total_freight",'total_freight', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
             order_by ='ref_no asc')

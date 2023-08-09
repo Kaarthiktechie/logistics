@@ -48,7 +48,7 @@ class TripBillingJob(Document):
                     "customer": self.customer,
                     "price_list" : "Standard Selling",
                     "item_code" : item_code ,
-                    "valid_from" : ["<=", self.bill_from_date]
+                    "valid_upto" : ['between',[self.bill_from_date,self.bill_to_date]]
                     #"valid_upto" : [">=", self.bill_to_date]
                     },
                     fields=['packing_unit', 'price_list_rate','valid_upto', 'excess_billing_type',"km_limit"])
@@ -68,11 +68,10 @@ class TripBillingJob(Document):
                 'customer': ['=', self.customer],
                 'price_list':["=", "Standard Selling"], 
                 #'location' : ['=', self.item_name],
-                'load_date': ['>=', self.bill_from_date],
-                'load_date': ['<=', self.bill_to_date]
+                "load_date" : ['between',[self.bill_from_date,self.bill_to_date]]
                 # 'truck_no':  ['=', self.truck_no]
             },
-            fields=['distinct truck_no as truck_no',"original_truck_no","ref_no"],
+            fields=['distinct truck_no as truck_no',"original_truck_no","ref_no","load_date"],
             group_by='truck_no')
         if vehicles:
             return vehicles
@@ -86,7 +85,7 @@ class TripBillingJob(Document):
         print("Cumulative_Km", cumulative_km)
         print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
-        cost_center = (f'{vehicle.truck_no} - DLPL')
+        cost_center = (f'{vehicle.truck_no} - DL')
 
         if excess_trips:
             excess_routes = list(map(lambda t:t.location, excess_trips))
@@ -178,8 +177,7 @@ class TripBillingJob(Document):
                 'price_list': ['=', "Standard Selling"],
                 # 'route_name' : ['=', self.item_name],
                 'truck_no' : ['=', vehicle.truck_no],
-                'load_date': ['>=', self.bill_from_date],
-                'load_date': ['<=', self.bill_to_date]
+                "load_date" : ['between',[self.bill_from_date,self.bill_to_date]]
             },
             fields=['price_list', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', ],
             order_by ='ref_no asc')
@@ -203,7 +201,7 @@ class TripBillingJob(Document):
             "shipping_address": "No 4, Sengunthapuram",
             "billing_address": "No 4, Sengunthapuram",
             "items": items,
-            "set_warehouse": "Stores - DLPL"
+            "set_warehouse": "Stores - DL"
             # "selling_price_list": "Standard S"
         })
         return sales_order
