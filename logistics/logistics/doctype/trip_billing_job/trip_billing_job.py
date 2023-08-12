@@ -38,9 +38,61 @@ class TripBillingJob(Document):
         sales_order = self.new_sales_order(self.items)
         if sales_order:
             sales_order.insert()
+            sales_order_name = sales_order.name
+            items = self.get_items_from_sales_order(sales_order_name)
+            self.sales_order_in_tripsheets(items, sales_order_name)
+            self.clear_trip_id_in_items(sales_order_name,items)
         else:
             frappe.throw("Sales Order is Empty")
-
+                    
+            
+    def get_trip_id(self,given_trips): 
+        trips=""       
+        for every_trip in given_trips:
+            if every_trip == given_trips[-1]:
+                trips += str(every_trip.name)
+                print(every_trip)
+            else:
+                trips += str(every_trip.name)+","
+        return trips
+    
+    
+    def sales_order_in_tripsheets(self, items, sales_order_name):
+        item_trip_id=[]
+        item_trip_id.clear()
+        count = 0
+        for every_item in items:
+            print("trip_ids in every_item", every_item.trip_id)
+            item_trips = every_item.trip_id
+            item_trip_id = item_trips.split(",")
+            for each_trip in item_trip_id:
+                if each_trip != "0":
+                    trip_details = frappe.get_doc("Tripsheets", each_trip)
+                    trip_details.title = sales_order_name
+                    trip_details.sales_order_item_name = every_item.name
+                    trip_details.save()
+                    count +=1
+                    print ("trip_name", each_trip, "item_name",trip_details.sales_order_item_name, count)
+                else:
+                    pass
+                
+                
+    def clear_trip_id_in_items(self, sales_order_name, items):
+            sales_order = frappe.get_doc("Sales Order", sales_order_name)
+            sales_order_items = sales_order.items
+            for every_sales_order_items in sales_order_items:
+                every_sales_order_items.trip_id = ""
+            sales_order.save()
+            
+            
+    def get_items_from_sales_order(self,sales_order_id):
+        sales_order = frappe.get_doc("Sales Order", sales_order_id)
+        if sales_order and sales_order.items:
+            return sales_order.items
+        else:
+            return None
+        
+        
     def get_price(self):
         item_code = "TRANSPORT CHARGES - MONTHLY"
         item_price_list =[]
@@ -87,9 +139,10 @@ class TripBillingJob(Document):
         print("Cumulative_Km", cumulative_km)
         print("Cumulatice_Toll_Charges", self.cumulative_toll_charges)
         print("Cumulative_Loading_Unloading_Charges", self.cumulative_loading_unloading_charges)
-        cost_center = (f'{vehicle.truck_no} - DLPL')
+        cost_center = (f'{vehicle.truck_no} - DL')
 
         if excess_trips:
+            trips = self.get_trip_id(excess_trips)
             excess_routes = list(map(lambda t:t.location, excess_trips))
             for excess_route in set(excess_routes):
                 print("Route", excess_route)
@@ -98,21 +151,21 @@ class TripBillingJob(Document):
                 self.uom = "Trip"
                 hsn_code = self.get_hsn_code(item)
                 # print(excess_route)
-                self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route),cost_center, hsn_code,self.uom)
+                self.add_item_auto_price(excess_route, item, vehicle.truck_no, excess_routes.count(excess_route),cost_center, hsn_code,self.uom,trips)
         if self.cumulative_toll_charges > 0:
             item = "TOLL_CHARGES"
             hsn_code = self.get_hsn_code(item)
-            self.add_item(item, item, vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center,hsn_code,self.uom)
+            self.add_item(item, item, vehicle.truck_no, 1, self.cumulative_toll_charges,cost_center,hsn_code,self.uom,0)
         if self.halting_charges > 0:
             item = "HALTING_CHARGE"
             hsn_code = self.get_hsn_code(item)
-            self.add_item(item, item, vehicle.truck_no, 1, self.halting_charges,cost_center,hsn_code,self.uom)
+            self.add_item(item, item, vehicle.truck_no, 1, self.halting_charges,cost_center,hsn_code,self.uom,0)
         # if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
         #     self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES", "Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
         if self.cumulative_loading_unloading_charges > 0:
             item = "LOADING/UNLOADING_CHARGES"
             hsn_code = self.get_hsn_code(item)
-            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 ,cost_center,hsn_code,self.uom)
+            self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1 ,cost_center,hsn_code,self.uom,0)
         
         print("***************************************************Next vehicle********************************************")
     
@@ -126,6 +179,7 @@ class TripBillingJob(Document):
         for trip in trips:
             if trips == None:
                 frappe.throw("Trips Not Found")
+                
             self.trip_count += 1
             if trip.halting_charges == None:
                 trip.halting_charges = 0
@@ -143,6 +197,16 @@ class TripBillingJob(Document):
         # print("cumulative_km: ", self.cumulative_km)
         return self.cumulative_km , self.cumulative_toll_charges
     
+    
+    def get_trip_id(self,given_trips): 
+        trips=""       
+        for every_trip in given_trips:
+            if every_trip == given_trips[-1]:
+                trips += str(every_trip.name)
+                print(every_trip)
+            else:
+                trips += str(every_trip.name)+","
+        return trips
     
     def get_toll_charges(self, vehicle):
         toll_charges_with_date =[]
@@ -191,7 +255,7 @@ class TripBillingJob(Document):
                 'truck_no' : ['=', vehicle.truck_no],
                 "load_date" : ['between',[self.bill_from_date,self.bill_to_date]]
             },
-            fields=['price_list', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', 'halting_charges'],
+            fields=["name", 'price_list', 'load_date', 'truck_no', 'location', 'starting_km', 'closing_km', 'running_km', 'bill_type', 'lr_no', 'halt_days', 'pod_rec_date', 'driver', 'halting_charges'],
             order_by ='ref_no asc')
         # print("trips_value", trips)
        
@@ -213,11 +277,11 @@ class TripBillingJob(Document):
             "shipping_address": "No 4, Sengunthapuram",
             "billing_address": "No 4, Sengunthapuram",
             "items": items,
-            "set_warehouse": "Stores - DLPL"
+            "set_warehouse": "Stores - DL"
             # "selling_price_list": "Standard S"
         })
         return sales_order
-    def add_item(self, code, name, description, qty, rate, cost_center,hsn_code,uom):
+    def add_item(self, code, name, description, qty, rate, cost_center,hsn_code,uom,trip_id):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -231,9 +295,10 @@ class TripBillingJob(Document):
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
             "hsn_sac": hsn_code,
-            "uom": uom
+            "uom": uom,
+            "trip_id": trip_id
         })    
-    def add_item_auto_price(self, code, name, description, qty, cost_center,hsn_code,uom):
+    def add_item_auto_price(self, code, name, description, qty, cost_center,hsn_code,uom,trip_id):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -244,5 +309,6 @@ class TripBillingJob(Document):
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
             "hsn_sac": hsn_code,
-            "uom": uom
+            "uom": uom,
+            "trip_id": trip_id
         })            
