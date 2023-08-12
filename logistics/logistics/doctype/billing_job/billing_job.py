@@ -147,7 +147,6 @@ class BillingJob(Document):
         
         if on_contract_trips:
             trip_ids = self.get_trip_id(on_contract_trips)
-            print("ilfhkdsgfshgkdjvjhakfkadfkafkgjfadhfmhdgsfms",len(trip_ids))
                 # crossover_trip.append(on_contract_trips[-1].name)
             item = "TRANSPORT CHARGES - MONTHLY"
             self.uom = "Month"
@@ -242,8 +241,6 @@ class BillingJob(Document):
         crossover_trip_id.clear()
 
         for trip in trips:
-            # if trip.original_truck_no == None:#have to include original truck no in tripsheet 
-            #     trip.original_truck_no = trip.truck_no# have to include original truck no in tripsheet 
             
         #HALTING CHARGES
             if trip.halting_charges == None:
