@@ -254,10 +254,14 @@ class BillingJob(Document):
             
         #FOOD CHARGES
             self.food_charges = self.get_food_charges(trip)
+            
+            
         #LOADING&UNLADING CHARGES    
             self.cumulative_loading_unloading_charges = self.get_loading_charges(trip)
             if self.cumulative_loading_unloading_charges != 0:
                 loading_trips.append(trip)
+                
+                
         #CUMULATIVE_KM, CROSSOVER_EXCESS_KM, ON_CONTRACT_TRIPS
             crossover_trip = None
             cumulative_km += trip.running_km
