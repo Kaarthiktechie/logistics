@@ -196,8 +196,14 @@ class RD_BrownBillingJob(Document):
             for each_trip in item_trip_id:
                 if each_trip != "0":
                     trip_details = frappe.get_doc("Tripsheets", each_trip)
+                    if trip_details.title == sales_order_name:
+                        if trip_details.sales_order_item_name:
+                            trip_details.sales_order_item_name += ","+every_item.name
+                        else:
+                            trip_details.sales_order_item_name = every_item.name
+                    else:
+                        trip_details.sales_order_item_name = every_item.name
                     trip_details.title = sales_order_name
-                    trip_details.sales_order_item_name = every_item.name
                     trip_details.save()
                     count +=1
                     print ("trip_name", each_trip, "item_name",trip_details.sales_order_item_name, count)
