@@ -47,12 +47,13 @@ class BillingJob(Document):
             sales_order.insert()
             sales_order_name = sales_order.name
             items = self.get_items_from_sales_order(sales_order_name)
-            self.sales_order_in_tripsheets(items, sales_order_name)
+            tripsandsales = self.sales_order_and_tripsheets_table(items, sales_order_name)
+            self.tripsandsalesitem_insert(tripsandsales)
             self.clear_trip_id_in_items(sales_order_name,items)
             
-            
-    def sales_order_in_tripsheets(self, items, sales_order_name):
+    def sales_order_and_tripsheets_table(self, items, sales_order_name):
         item_trip_id=[]
+        list_of_items=[]
         item_trip_id.clear()
         count = 0
         for every_item in items:
@@ -61,20 +62,21 @@ class BillingJob(Document):
             item_trip_id = item_trips.split(",")
             for each_trip in item_trip_id:
                 if each_trip != "0":
-                    trip_details = frappe.get_doc("Tripsheets", each_trip)
-                    if trip_details.title == sales_order_name:
-                        if trip_details.sales_order_item_name:
-                            trip_details.sales_order_item_name += ","+every_item.name
-                        else:
-                            trip_details.sales_order_item_name = every_item.name
-                    else:
-                        trip_details.sales_order_item_name = every_item.name
-                    trip_details.title = sales_order_name
-                    trip_details.save()
-                    count +=1
-                    print ("trip_name", each_trip, "item_name",trip_details.sales_order_item_name, count)
-                else:
-                    pass
+                    tripsheet = frappe.get_doc("Tripsheets", each_trip)
+                    tripitems = ({                      "title": sales_order_name,
+                                                        "sales_order_item_name": every_item.name,
+                                                        # "running_km": tripsheet.running_km, to do work on running km being the same as the running km in the sales order item 
+                                                        "trip_name": each_trip})
+                    list_of_items.append(tripitems)
+        return(list_of_items)
+                    
+                    
+    def tripsandsalesitem_insert(self, list_of_items):
+                    order_trip_id = frappe.get_doc({ "doctype":"Trips and Sales Item",
+                                                    "link_sales_order_item_and_tripsheet": list_of_items
+                                                    })
+                    order_trip_id.insert()
+                    
                 
                 
     def clear_trip_id_in_items(self, sales_order_name, items):
