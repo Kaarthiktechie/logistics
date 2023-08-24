@@ -18,16 +18,8 @@
   "trip",
   "status",
   "date",
-  "open_starting_km",
-  "open_time",
-  "source_in_starting_km",
-  "source_in_time",
-  "destination_in_km",
-  "destination_in_time",
-  "destination_out_km",
-  "destination_out_time",
-  "closed_km",
-  "trip_closed_time",
+  "time",
+  "km",
   "amended_from"
  ],
  "fields": [
@@ -59,66 +51,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "open_starting_km",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Open Starting km"
-  },
-  {
-   "fieldname": "open_time",
-   "fieldtype": "Time",
-   "hidden": 1,
-   "label": "Open Time"
-  },
-  {
-   "fieldname": "source_in_starting_km",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Source In Starting km"
-  },
-  {
-   "fieldname": "source_in_time",
-   "fieldtype": "Time",
-   "hidden": 1,
-   "label": "Source In Time"
-  },
-  {
-   "fieldname": "destination_in_km",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Destination In Km"
-  },
-  {
-   "fieldname": "destination_in_time",
-   "fieldtype": "Time",
-   "hidden": 1,
-   "label": "Destination In Time"
-  },
-  {
-   "fieldname": "destination_out_km",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Destination Out Km"
-  },
-  {
-   "fieldname": "destination_out_time",
-   "fieldtype": "Time",
-   "hidden": 1,
-   "label": "Destination Out Time"
-  },
-  {
-   "fieldname": "closed_km",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Closed Km"
-  },
-  {
-   "fieldname": "trip_closed_time",
-   "fieldtype": "Time",
-   "hidden": 1,
-   "label": "Trip Closed Time"
-  },
-  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -133,11 +65,23 @@
    "label": "Truck no",
    "options": "Asset",
    "read_only": 1
+  },
+  {
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "label": "Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "km",
+   "fieldtype": "Data",
+   "label": "Km",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-24 16:59:04.596214",
+ "modified": "2023-08-24 18:09:16.011610",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trip details",
