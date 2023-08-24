@@ -1,0 +1,157 @@
+{
+ "actions": [
+  {
+   "action": "app/doctype/Trips",
+   "action_type": "Server Action",
+   "label": "Open"
+  }
+ ],
+ "allow_rename": 1,
+ "creation": "2023-08-24 11:00:16.175299",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "driver",
+  "asset_name",
+  "trip",
+  "status",
+  "date",
+  "open_starting_km",
+  "open_time",
+  "source_in_starting_km",
+  "source_in_time",
+  "destination_in_km",
+  "destination_in_time",
+  "destination_out_km",
+  "destination_out_time",
+  "closed_km",
+  "trip_closed_time",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "label": "Driver",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "trip",
+   "fieldtype": "Link",
+   "label": "Trip",
+   "options": "Item"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Trip Status",
+   "options": "\nOpen\nEmpty Moment\nSource In\nSource Out\nDestination In\nDestination out\nClosed"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "open_starting_km",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Open Starting km"
+  },
+  {
+   "fieldname": "open_time",
+   "fieldtype": "Time",
+   "hidden": 1,
+   "label": "Open Time"
+  },
+  {
+   "fieldname": "source_in_starting_km",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Source In Starting km"
+  },
+  {
+   "fieldname": "source_in_time",
+   "fieldtype": "Time",
+   "hidden": 1,
+   "label": "Source In Time"
+  },
+  {
+   "fieldname": "destination_in_km",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Destination In Km"
+  },
+  {
+   "fieldname": "destination_in_time",
+   "fieldtype": "Time",
+   "hidden": 1,
+   "label": "Destination In Time"
+  },
+  {
+   "fieldname": "destination_out_km",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Destination Out Km"
+  },
+  {
+   "fieldname": "destination_out_time",
+   "fieldtype": "Time",
+   "hidden": 1,
+   "label": "Destination Out Time"
+  },
+  {
+   "fieldname": "closed_km",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Closed Km"
+  },
+  {
+   "fieldname": "trip_closed_time",
+   "fieldtype": "Time",
+   "hidden": 1,
+   "label": "Trip Closed Time"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Trips",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "asset_name",
+   "fieldtype": "Link",
+   "label": "Truck no",
+   "options": "Asset"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-24 16:59:19.261501",
+ "modified_by": "Administrator",
+ "module": "Logistics",
+ "name": "Trips",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
