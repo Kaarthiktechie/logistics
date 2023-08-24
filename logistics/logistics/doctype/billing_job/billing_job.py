@@ -173,7 +173,21 @@ class BillingJob(Document):
             
             
         if excess_trips:
-            trip_ids = self.get_trip_id(excess_trips)
+            location_list=[]
+            trip_list =[]
+            trip_list.clear()
+            count = 0
+            location_list.clear()
+            diff_trips = list(map(lambda t:t.location, excess_trips))
+            diff_trip = set(diff_trips)
+            diff_trip_list = list(diff_trip)
+            total_count = len(diff_trip)
+            if total_count > count:
+                for every_trip in excess_trips:
+                    if every_trip.location == diff_trip_list[0]:
+                        trip_list.append(every_trip)
+                count+=1
+            trip_ids = self.get_trip_id(trip_list)
             excess_km = 0
             if(self.item_price.excess_billing_type == "Per-Km"):
                 for excess_trip in excess_trips:
@@ -225,9 +239,10 @@ class BillingJob(Document):
         for every_trip in contract_trips:
             if every_trip == contract_trips[-1]:
                 trips += str(every_trip)
-                print(contract_trips)
+                
             else:
                 trips += str(every_trip)+","
+                print("constlshjsuifhafkshfjsgdf",contract_trips)
         return trips
     
     
@@ -240,6 +255,7 @@ class BillingJob(Document):
         crossover_trip_id = []
         crossover_excess_km = 0
         on_contract_trips = []
+        on_contract_trips.clear()
         excess_trips = []
         halting_trips=[]
         loading_trips =[]
