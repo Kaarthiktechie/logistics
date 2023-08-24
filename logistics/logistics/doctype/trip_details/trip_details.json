@@ -20,7 +20,8 @@
   "date",
   "time",
   "km",
-  "amended_from"
+  "amended_from",
+  "id"
  ],
  "fields": [
   {
@@ -77,11 +78,16 @@
    "fieldtype": "Data",
    "label": "Km",
    "read_only": 1
+  },
+  {
+   "fieldname": "id",
+   "fieldtype": "Data",
+   "label": "Trip Id"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-24 18:09:16.011610",
+ "modified": "2023-08-24 18:26:12.852946",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trip details",

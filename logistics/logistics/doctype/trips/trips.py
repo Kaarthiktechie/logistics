@@ -8,7 +8,14 @@ from datetime import date
 class Trips(Document):	
   
 	def validate(self):
+		self.validation()
 		self.table_insert()
+
+	def validation(self):
+		all_trips = frappe.db.get_list("Trip details", filters = {"id" : self.name}, fields=["status"])
+		for every_trip in all_trips:
+			if every_trip.status == self.status:
+				frappe.throw("You already have updated the status"+" "+ self.status)
   
 	def table_insert(self):
 		tripsstatus = frappe.get_doc({
@@ -19,7 +26,8 @@ class Trips(Document):
 			"status" : self.status,
 			"date"	: self.date,
 			"time" : self.time,
-			"km" : self.km
+			"km" : self.km,
+			"id" : self.name
 		})
 		if tripsstatus:
 			tripsstatus.insert()
