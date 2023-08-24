@@ -74,7 +74,8 @@ class TripBillingJob(Document):
                     tripitems = ({                      "title": sales_order_name,
                                                         "sales_order_item_name": every_item.name,
                                                         # "running_km": tripsheet.running_km, to do work on running km being the same as the running km in the sales order item 
-                                                        "trip_name": each_trip})
+                                                        "trip_name": each_trip,
+                                                        "item_code": every_item.item_code})
                     list_of_items.append(tripitems)
         return(list_of_items)
                     
