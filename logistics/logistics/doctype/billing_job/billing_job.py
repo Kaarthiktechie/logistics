@@ -173,24 +173,26 @@ class BillingJob(Document):
             
             
         if excess_trips:
-            location_list=[]
+            # location_list=[]
             trip_list =[]
             trip_list.clear()
-            count = 0
-            location_list.clear()
-            diff_trips = list(map(lambda t:t.location, excess_trips))
-            diff_trip = set(diff_trips)
-            diff_trip_list = list(diff_trip)
-            total_count = len(diff_trip)
-            if total_count > count:
-                for every_trip in excess_trips:
-                    if every_trip.location == diff_trip_list[0]:
-                        trip_list.append(every_trip)
-                count+=1
-            trip_ids = self.get_trip_id(trip_list)
+            # count = 0
+            # location_list.clear()
+            # diff_trips = list(map(lambda t:t.location, excess_trips))
+            # diff_trip = set(diff_trips)
+            # diff_trip_list = list(diff_trip)
+            # total_count = len(diff_trip)
+            # if total_count > count:
+            #     for every_trip in excess_trips:
+            #         if every_trip.location == diff_trip_list[0]:
+            #             trip_list.append(every_trip)
+            #     count+=1
+            
             excess_km = 0
             if(self.item_price.excess_billing_type == "Per-Km"):
                 for excess_trip in excess_trips:
+                    trip_ids = self.get_trip_id(excess_trip)
+                    trip_list.append(trip_ids)
                     excess_km += excess_trip.running_km
                 item = "TRANSPORT CHARGES - KM"
                 self.uom = "Km"
@@ -199,6 +201,10 @@ class BillingJob(Document):
             else:
                 excess_routes = list(map(lambda t:t.location, excess_trips))
                 for excess_route in set(excess_routes):
+                    for excess_trip in excess_trips:
+                        if excess_trip.location in excess_route:
+                            trip_list.append(excess_trip)
+                    trip_ids = self.get_trip_id(trip_list)
                     item = "TRANSPORT CHARGES - TRIPS"
                     self.uom = "Trip"
                     hsn_code = self.get_hsn_code(item)
@@ -242,7 +248,7 @@ class BillingJob(Document):
                 
             else:
                 trips += str(every_trip)+","
-                print("constlshjsuifhafkshfjsgdf",contract_trips)
+                print(trips)
         return trips
     
     
