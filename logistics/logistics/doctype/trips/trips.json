@@ -15,7 +15,7 @@
  "field_order": [
   "driver",
   "asset_name",
-  "trip",
+  "item_id",
   "status",
   "date",
   "time",
@@ -28,12 +28,6 @@
    "fieldtype": "Link",
    "label": "Driver",
    "options": "Employee"
-  },
-  {
-   "fieldname": "trip",
-   "fieldtype": "Link",
-   "label": "Trip",
-   "options": "Item"
   },
   {
    "fieldname": "status",
@@ -70,11 +64,17 @@
    "fieldname": "km",
    "fieldtype": "Data",
    "label": "Km"
+  },
+  {
+   "fieldname": "item_id",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-24 18:07:42.925925",
+ "modified": "2023-08-25 12:35:54.037929",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trips",
