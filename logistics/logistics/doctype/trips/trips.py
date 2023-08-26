@@ -35,7 +35,7 @@ class Trips(Document):
 			tripsstatus.insert()
    
 @frappe.whitelist()
-def validate_trip(location,date,sales_order):
+def trip_creation(location,date,sales_order):
     sales_order_item_info = frappe.db.get_list("Sales Order Item",filters={"parent": sales_order}, fields=['name'])
     for each_item in sales_order_item_info:
         trip = frappe.get_doc({

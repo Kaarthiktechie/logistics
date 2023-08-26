@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-26 15:04:56.771433",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "driver",
+  "truck",
+  "reports_in",
+  "trip",
+  "start",
+  "reports_out"
+ ],
+ "fields": [
+  {
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "label": "Driver",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "truck",
+   "fieldtype": "Link",
+   "label": "Truck",
+   "options": "Asset"
+  },
+  {
+   "fieldname": "reports_in",
+   "fieldtype": "Button",
+   "label": "Reports In"
+  },
+  {
+   "fieldname": "trip",
+   "fieldtype": "Data",
+   "label": "Trip"
+  },
+  {
+   "fieldname": "start",
+   "fieldtype": "Button",
+   "label": "start"
+  },
+  {
+   "fieldname": "reports_out",
+   "fieldtype": "Data",
+   "label": "Reports Out"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-26 15:22:04.694459",
+ "modified_by": "Administrator",
+ "module": "Logistics",
+ "name": "Driver Login Page",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
