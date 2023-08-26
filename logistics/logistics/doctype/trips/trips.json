@@ -20,7 +20,10 @@
   "date",
   "time",
   "km",
-  "amended_from"
+  "amended_from",
+  "sales_order_id",
+  "sales_order_item_id",
+  "trip"
  ],
  "fields": [
   {
@@ -70,11 +73,29 @@
    "fieldtype": "Link",
    "label": "Location",
    "options": "Item"
+  },
+  {
+   "fieldname": "sales_order_id",
+   "fieldtype": "Data",
+   "label": "Sales Order Id",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sales_order_item_id",
+   "fieldtype": "Data",
+   "label": "Sales Order Item Id",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trip",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "trip"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-25 12:35:54.037929",
+ "modified": "2023-08-26 12:10:57.222186",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trips",
