@@ -8,7 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "driver",
-  "truck",
+  "asset_name",
   "reports_in",
   "trip",
   "start",
@@ -22,15 +22,10 @@
    "options": "Employee"
   },
   {
-   "fieldname": "truck",
-   "fieldtype": "Link",
-   "label": "Truck",
-   "options": "Asset"
-  },
-  {
    "fieldname": "reports_in",
    "fieldtype": "Button",
-   "label": "Reports In"
+   "label": "Reports In",
+   "options": "report_in"
   },
   {
    "fieldname": "trip",
@@ -40,17 +35,24 @@
   {
    "fieldname": "start",
    "fieldtype": "Button",
-   "label": "start"
+   "label": "Start"
   },
   {
    "fieldname": "reports_out",
-   "fieldtype": "Data",
-   "label": "Reports Out"
+   "fieldtype": "Button",
+   "label": "Reports Out",
+   "options": "report_out"
+  },
+  {
+   "fieldname": "asset_name",
+   "fieldtype": "Link",
+   "label": "Truck",
+   "options": "Asset"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-26 15:22:04.694459",
+ "modified": "2023-08-26 18:45:19.920036",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Driver Login Page",

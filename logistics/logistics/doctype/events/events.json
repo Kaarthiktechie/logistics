@@ -20,7 +20,6 @@
   "date",
   "time",
   "km",
-  "amended_from",
   "id"
  ],
  "fields": [
@@ -40,24 +39,15 @@
   },
   {
    "fieldname": "status",
-   "fieldtype": "Select",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
    "label": "Trip Status",
-   "options": "\nOpen\nEmpty Moment\nSource In\nSource Out\nDestination In\nDestination out\nClosed",
    "read_only": 1
   },
   {
    "fieldname": "date",
    "fieldtype": "Date",
    "label": "Date",
-   "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Trips",
-   "print_hide": 1,
    "read_only": 1
   },
   {
@@ -87,10 +77,10 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-24 18:26:12.852946",
+ "modified": "2023-08-26 18:26:47.705329",
  "modified_by": "Administrator",
  "module": "Logistics",
- "name": "Trip details",
+ "name": "Events",
  "owner": "Administrator",
  "permissions": [
   {
