@@ -1,0 +1,136 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-28 09:45:25.782370",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "address",
+  "trip",
+  "section_break_3qj0k",
+  "source_in",
+  "source_in_km",
+  "source_in_time",
+  "source_out",
+  "source_out_km",
+  "source_out_time",
+  "destination_in",
+  "destination_in_km",
+  "destination_time",
+  "destination_out",
+  "destination_out_km",
+  "destination_out_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "source_in",
+   "fieldtype": "Button",
+   "label": "Source In"
+  },
+  {
+   "fieldname": "source_in_km",
+   "fieldtype": "Int",
+   "label": "Source In Km"
+  },
+  {
+   "fieldname": "source_in_time",
+   "fieldtype": "Time",
+   "label": "Source In Time"
+  },
+  {
+   "fieldname": "source_out",
+   "fieldtype": "Button",
+   "label": "Source Out"
+  },
+  {
+   "fieldname": "source_out_km",
+   "fieldtype": "Int",
+   "label": "Source Out Km"
+  },
+  {
+   "fieldname": "source_out_time",
+   "fieldtype": "Time",
+   "label": "Source Out Time"
+  },
+  {
+   "fieldname": "destination_in",
+   "fieldtype": "Button",
+   "label": "Destination In"
+  },
+  {
+   "fieldname": "destination_in_km",
+   "fieldtype": "Int",
+   "label": "Destination In Km"
+  },
+  {
+   "fieldname": "destination_time",
+   "fieldtype": "Time",
+   "label": "Destination Time"
+  },
+  {
+   "fieldname": "destination_out",
+   "fieldtype": "Button",
+   "label": "Destination Out"
+  },
+  {
+   "fieldname": "destination_out_km",
+   "fieldtype": "Int",
+   "label": "Destination Out Km"
+  },
+  {
+   "fieldname": "destination_out_time",
+   "fieldtype": "Time",
+   "label": "Destination Out Time"
+  },
+  {
+   "fieldname": "trip",
+   "fieldtype": "Link",
+   "label": "Trip",
+   "options": "Driver Login Page"
+  },
+  {
+   "fieldname": "section_break_3qj0k",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-28 10:27:23.043423",
+ "modified_by": "Administrator",
+ "module": "Logistics",
+ "name": "Trip Status",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

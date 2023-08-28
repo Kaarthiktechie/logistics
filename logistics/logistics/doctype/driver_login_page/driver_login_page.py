@@ -17,7 +17,9 @@ class DriverLoginPage(Document):
 		})
 		if tripsstatus:
 			tripsstatus.insert()
-   
+		# frappe.local.response["type"] = "redirect"
+		# frappe.local.response["location"] = f"/desk#Logistics/Trip Details/"
+
 	@frappe.whitelist()
 	def report_out(self):
 		tripsstatus = frappe.get_doc({
@@ -29,4 +31,3 @@ class DriverLoginPage(Document):
 		})
 		if tripsstatus:
 			tripsstatus.insert()
-   
