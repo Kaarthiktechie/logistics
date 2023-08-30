@@ -24,8 +24,7 @@
   {
    "fieldname": "reports_in",
    "fieldtype": "Button",
-   "label": "Reports In",
-   "options": "report_in"
+   "label": "Reports In"
   },
   {
    "fieldname": "trip",
@@ -52,7 +51,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-28 10:14:00.745348",
+ "modified": "2023-08-30 11:28:32.788771",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Driver Login Page",
