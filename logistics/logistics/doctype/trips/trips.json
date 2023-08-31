@@ -16,6 +16,7 @@
   "driver",
   "asset_name",
   "item_id",
+  "start",
   "status",
   "date",
   "time",
@@ -91,11 +92,16 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "trip"
+  },
+  {
+   "fieldname": "start",
+   "fieldtype": "Button",
+   "label": "Start"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-26 12:10:57.222186",
+ "modified": "2023-08-30 12:05:59.223453",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trips",

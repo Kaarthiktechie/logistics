@@ -350,7 +350,7 @@ class RD_BrownBillingJob(Document):
             "rate": rate,
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
-            "hsn_sac": hsn_code,
+            
             "trip_id": trip_id
         })    
     def add_item_auto_price(self, code, name, description, qty,cost_center, hsn_code,trip_id):
@@ -363,7 +363,7 @@ class RD_BrownBillingJob(Document):
             "qty": qty,
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
-            "hsn_sac": hsn_code,
+            
             "trip_id": trip_id
         })            
 

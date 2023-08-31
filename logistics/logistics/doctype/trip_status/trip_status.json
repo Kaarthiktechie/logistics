@@ -10,6 +10,11 @@
   "customer",
   "address",
   "trip",
+  "empty_run",
+  "empty_run_starting_km",
+  "empty_run_ending_km",
+  "break_down",
+  "reason",
   "section_break_3qj0k",
   "source_in",
   "source_in_km",
@@ -39,26 +44,33 @@
    "read_only": 1
   },
   {
+   "default": "0",
    "fieldname": "source_in",
-   "fieldtype": "Button",
+   "fieldtype": "Check",
    "label": "Source In"
   },
   {
+   "depends_on": "eval:doc.source_in",
    "fieldname": "source_in_km",
    "fieldtype": "Int",
-   "label": "Source In Km"
+   "label": "Source In Km",
+   "read_only_depends_on": "eval:doc.source_in.permission == \"read_only\""
   },
   {
+   "default": "0",
    "fieldname": "source_in_time",
    "fieldtype": "Time",
+   "hidden": 1,
    "label": "Source In Time"
   },
   {
+   "default": "0",
    "fieldname": "source_out",
-   "fieldtype": "Button",
+   "fieldtype": "Check",
    "label": "Source Out"
   },
   {
+   "depends_on": "eval:doc.source_out",
    "fieldname": "source_out_km",
    "fieldtype": "Int",
    "label": "Source Out Km"
@@ -66,14 +78,17 @@
   {
    "fieldname": "source_out_time",
    "fieldtype": "Time",
+   "hidden": 1,
    "label": "Source Out Time"
   },
   {
+   "default": "0",
    "fieldname": "destination_in",
-   "fieldtype": "Button",
+   "fieldtype": "Check",
    "label": "Destination In"
   },
   {
+   "depends_on": "eval:doc.destination_in",
    "fieldname": "destination_in_km",
    "fieldtype": "Int",
    "label": "Destination In Km"
@@ -81,14 +96,17 @@
   {
    "fieldname": "destination_time",
    "fieldtype": "Time",
+   "hidden": 1,
    "label": "Destination Time"
   },
   {
+   "default": "0",
    "fieldname": "destination_out",
-   "fieldtype": "Button",
+   "fieldtype": "Check",
    "label": "Destination Out"
   },
   {
+   "depends_on": "eval:doc.destination_out",
    "fieldname": "destination_out_km",
    "fieldtype": "Int",
    "label": "Destination Out Km"
@@ -96,22 +114,53 @@
   {
    "fieldname": "destination_out_time",
    "fieldtype": "Time",
+   "hidden": 1,
    "label": "Destination Out Time"
   },
   {
    "fieldname": "trip",
    "fieldtype": "Link",
    "label": "Trip",
-   "options": "Driver Login Page"
+   "options": "Trips"
   },
   {
    "fieldname": "section_break_3qj0k",
    "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "empty_run",
+   "fieldtype": "Check",
+   "label": "Empty run"
+  },
+  {
+   "default": "0",
+   "fieldname": "break_down",
+   "fieldtype": "Check",
+   "label": "Break Down"
+  },
+  {
+   "depends_on": "eval: doc.break_down",
+   "fieldname": "reason",
+   "fieldtype": "Data",
+   "label": "Reason"
+  },
+  {
+   "depends_on": "eval:doc.empty_run",
+   "fieldname": "empty_run_starting_km",
+   "fieldtype": "Int",
+   "label": "Empty run Starting km"
+  },
+  {
+   "depends_on": "eval:doc.empty_run",
+   "fieldname": "empty_run_ending_km",
+   "fieldtype": "Int",
+   "label": "Empty run Ending km"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-28 10:27:23.043423",
+ "modified": "2023-08-30 17:57:29.701620",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trip Status",

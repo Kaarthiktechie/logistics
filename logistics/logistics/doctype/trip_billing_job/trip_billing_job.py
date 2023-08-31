@@ -303,7 +303,7 @@ class TripBillingJob(Document):
             "rate": rate,
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
-            "hsn_sac": hsn_code,
+            
             "uom": uom,
             "trip_id": trip_id
         })    
@@ -317,7 +317,7 @@ class TripBillingJob(Document):
             "qty": qty,
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
-            "hsn_sac": hsn_code,
+            
             "uom": uom,
             "trip_id": trip_id
         })            

@@ -408,7 +408,7 @@ class BillingJob(Document):
             "rate": rate,
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
-            "hsn_sac": hsn_code,
+            
             "uom": uom,
             "trip_id": contract_trips
         }) 
@@ -425,7 +425,7 @@ class BillingJob(Document):
             "qty": qty,
             "doc_type": "Sales Order Item",
             "cost_center": cost_center,
-            "hsn_sac" : hsn_code,
+            
             "uom": uom,
             "trip_id": contract_trips
         })            

@@ -39,8 +39,7 @@
   {
    "fieldname": "reports_out",
    "fieldtype": "Button",
-   "label": "Reports Out",
-   "options": "report_out"
+   "label": "Reports Out"
   },
   {
    "fieldname": "asset_name",
@@ -51,7 +50,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-30 11:28:32.788771",
+ "modified": "2023-08-31 09:35:47.296800",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Driver Login Page",

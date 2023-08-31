@@ -3,14 +3,34 @@
 frappe.ui.form.on('Driver Login Page', {
     refresh: function(frm) {
         frm.fields_dict['reports_in'].$input.on('click', function() {
-            // Redirect to a new URL
+            frm.toggle_enable('reports_in', false);
             frappe.call({
-                method:"logistics.logistics.doctype.driver_login_page.driver_login_page.function"
+                method:"logistics.logistics.doctype.driver_login_page.driver_login_page.report_in",
+                args:{
+                    driver: frm.doc.driver,
+                    asset_name:frm.doc.asset_name
+                },
+                callback:function(report){
+                    window.location.href = "http://localhost:8000/app/trips/?asset_name="+frm.doc.asset_name+"& driver="+frm.doc.driver+"&date="+report.message
+                    console.log("lsjdhgjhsgdj")
+                }
             })
-            window.location.href = "http://localhost:8000/app/todo/25b0133c6a";
+            
         });
-    }
-});
+    }})
+frappe.ui.form.on('Driver Login Page', {
+    refresh: function(frm) {
+        frm.fields_dict['reports_out'].$input.on('click', function() {
+            frappe.call({
+                method:"logistics.logistics.doctype.driver_login_page.driver_login_page.report_out",
+                args:{
+                    driver: frm.doc.driver,
+                    asset_name:frm.doc.asset_name
+                }
+            })
+            
+        });
+    }})
 
 
 

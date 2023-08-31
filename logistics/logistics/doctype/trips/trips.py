@@ -54,3 +54,23 @@ def trip_creation(location,date,sales_order):
 			})
 		if tripsstatus:
 				tripsstatus.insert()
+    
+@frappe.whitelist()
+def start(trip_id):
+	trip_status_id = frappe.db.get_list ("Trip Status",
+    filters={
+		"trip":["=", trip_id]
+	})
+ 
+	if trip_status_id[0]:
+		per_trip_status_id = trip_status_id[0]
+		return per_trip_status_id.name
+	else:
+		trip_status = frappe.get_doc({
+						"doctype": "Trip Status",
+						"trip" : trip_id
+			})
+		if trip_status:
+			trip_status.insert()
+			trip_status.save()
+		return trip_status.name
