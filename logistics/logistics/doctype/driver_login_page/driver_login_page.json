@@ -9,9 +9,10 @@
  "field_order": [
   "driver",
   "asset_name",
+  "date",
   "reports_in",
   "trip",
-  "start",
+  "voucher",
   "reports_out"
  ],
  "fields": [
@@ -24,33 +25,39 @@
   {
    "fieldname": "reports_in",
    "fieldtype": "Button",
-   "label": "Reports In"
-  },
-  {
-   "fieldname": "trip",
-   "fieldtype": "Data",
-   "label": "Trip"
-  },
-  {
-   "fieldname": "start",
-   "fieldtype": "Button",
-   "label": "Start"
+   "label": "Report In"
   },
   {
    "fieldname": "reports_out",
    "fieldtype": "Button",
-   "label": "Reports Out"
+   "label": "Report Out"
   },
   {
    "fieldname": "asset_name",
    "fieldtype": "Link",
    "label": "Truck",
    "options": "Asset"
+  },
+  {
+   "fieldname": "voucher",
+   "fieldtype": "Button",
+   "label": "Vouchers"
+  },
+  {
+   "fieldname": "trip",
+   "fieldtype": "Button",
+   "label": "Trip"
+  },
+  {
+   "default": "now",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-31 09:35:47.296800",
+ "modified": "2023-08-31 15:52:26.356447",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Driver Login Page",

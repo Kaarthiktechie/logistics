@@ -9,15 +9,17 @@ frappe.ui.form.on('Driver Login Page', {
                 args:{
                     driver: frm.doc.driver,
                     asset_name:frm.doc.asset_name
-                },
-                callback:function(report){
-                    window.location.href = "http://localhost:8000/app/trips/?asset_name="+frm.doc.asset_name+"& driver="+frm.doc.driver+"&date="+report.message
-                    console.log("lsjdhgjhsgdj")
                 }
             })
             
         });
     }})
+frappe.ui.form.on('Driver Login Page', {
+    refresh: function(frm) {
+        frm.fields_dict['trip'].$input.on('click', function() {
+            window.location.href = "http://localhost:8000/app/trips/?asset_name="+frm.doc.asset_name+"&driver="+frm.doc.driver+"&date="+frm.doc.date
+            });
+        }})
 frappe.ui.form.on('Driver Login Page', {
     refresh: function(frm) {
         frm.fields_dict['reports_out'].$input.on('click', function() {

@@ -21,8 +21,7 @@ def report_in(driver,asset_name):
 		})
 		if tripsstatus:
 			tripsstatus.insert()
-		date = nowdate()
-		return date
+
 		
    
 @frappe.whitelist()

@@ -13,14 +13,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "driver",
-  "asset_name",
-  "item_id",
-  "start",
-  "status",
   "date",
+  "item_id",
+  "asset_name",
+  "driver",
+  "section_break_kark1",
+  "start",
+  "trip_details",
+  "voucher",
+  "close",
+  "section_break_kfyte",
   "time",
-  "km",
   "amended_from",
   "sales_order_id",
   "sales_order_item_id",
@@ -32,12 +35,6 @@
    "fieldtype": "Link",
    "label": "Driver",
    "options": "Employee"
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Trip Status",
-   "options": "\nOpen\nEmpty Moment\nSource In\nSource Out\nDestination In\nDestination out\nClosed"
   },
   {
    "fieldname": "date",
@@ -62,12 +59,8 @@
   {
    "fieldname": "time",
    "fieldtype": "Time",
+   "hidden": 1,
    "label": "Time"
-  },
-  {
-   "fieldname": "km",
-   "fieldtype": "Data",
-   "label": "Km"
   },
   {
    "fieldname": "item_id",
@@ -97,11 +90,34 @@
    "fieldname": "start",
    "fieldtype": "Button",
    "label": "Start"
+  },
+  {
+   "fieldname": "section_break_kark1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_kfyte",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "trip_details",
+   "fieldtype": "Button",
+   "label": "Trip Details"
+  },
+  {
+   "fieldname": "voucher",
+   "fieldtype": "Button",
+   "label": "Voucher"
+  },
+  {
+   "fieldname": "close",
+   "fieldtype": "Button",
+   "label": "Close"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-30 12:05:59.223453",
+ "modified": "2023-08-31 17:17:39.504500",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trips",

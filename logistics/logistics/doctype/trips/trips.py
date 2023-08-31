@@ -23,10 +23,8 @@ class Trips(Document):
 			"driver": self.driver,
 			"asset_name": self.asset_name,
 			"trip" : self.item_id,
-			"status" : self.status,
 			"date"	: self.date,
 			"time" : self.time,
-			"km" : self.km,
 			"id" : self.name
 		})
 		if tripsstatus:
@@ -62,7 +60,7 @@ def start(trip_id):
 		"trip":["=", trip_id]
 	})
  
-	if trip_status_id[0]:
+	if trip_status_id:
 		per_trip_status_id = trip_status_id[0]
 		return per_trip_status_id.name
 	else:
@@ -74,3 +72,16 @@ def start(trip_id):
 			trip_status.insert()
 			trip_status.save()
 		return trip_status.name
+
+@frappe.whitelist()
+def trip_details(trip_id):
+	trip_status_id = frappe.db.get_list ("Trip Status",
+    filters={
+		"trip":["=", trip_id]
+	})
+ 
+	if trip_status_id:
+		per_trip_status_id = trip_status_id[0]
+		return per_trip_status_id.name
+	else:
+		frappe.throw("There are no trips currently active")
