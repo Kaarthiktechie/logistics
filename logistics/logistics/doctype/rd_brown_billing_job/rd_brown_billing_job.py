@@ -150,19 +150,19 @@ class RD_BrownBillingJob(Document):
             #Halting_charges for RD_Brown
             # trip_ids = self.get_trip_id(vehicle.truck_no)
             item = "TRANSPORT CHARGES"
-            hsn_code = self.get_hsn_code(item)
-            self.add_item(item, item, original_truck_no_string, 1,total_amount_with_rental,cost_center, hsn_code,trip_id)
+            # hsn_code = self.get_hsn_code(item)
+            self.add_item(item, item, original_truck_no_string, 1,total_amount_with_rental,cost_center,trip_id)
         
             if self.cumulative_toll_charges > 0:
                 item ="TOLL_CHARGES"
-                hsn_code = self.get.get_hsn_code(item)
-                self.add_item(item, item, original_truck_no_string, 1, self.cumulative_toll_charges,cost_center,hsn_code,0)
+                # hsn_code = self.get.get_hsn_code(item)
+                self.add_item(item, item, original_truck_no_string, 1, self.cumulative_toll_charges,cost_center,0)
             # if self.customer == "UNITECH PLASTO COMPONANTS PVT LTD":
             #     self.add_item_auto_price("MONTHLY_FOOD_CHARGES", "MONTHLY_FOOD_CHARGES","Monthly Food Charges"+" "+vehicle.truck_no ,len(self.original_truck_no))
             if self.cumulative_loading_unloading_charges > 0:
                 item ="LOADING/UNLOADING_CHARGES"
-                hsn_code = self.get.get_hsn_code(item)
-                self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1, cost_center, hsn_code,0)
+                # hsn_code = self.get.get_hsn_code(item)
+                self.add_item_auto_price("LOADING/UNLOADING_CHARGES","LOADING/UNLOADING_CHARGES", "loading and unloading charge for the vehicle", 1, cost_center,0)
                 
         sales_order = self.new_sales_order(self.items)
         if sales_order:
@@ -337,7 +337,7 @@ class RD_BrownBillingJob(Document):
             # "selling_price_list": "Standard S"
         })
         return sales_order
-    def add_item(self, code, name, description, qty, rate, cost_center, hsn_code,trip_id):
+    def add_item(self, code, name, description, qty, rate, cost_center,trip_id):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
@@ -353,7 +353,7 @@ class RD_BrownBillingJob(Document):
             
             "trip_id": trip_id
         })    
-    def add_item_auto_price(self, code, name, description, qty,cost_center, hsn_code,trip_id):
+    def add_item_auto_price(self, code, name, description, qty,cost_center,trip_id):
         # description_of_vehicle = description
         self.items.append({
             "item_code": code,
