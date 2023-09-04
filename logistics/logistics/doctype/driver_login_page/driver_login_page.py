@@ -11,17 +11,24 @@ class DriverLoginPage(Document):
 
 @frappe.whitelist()
 def report_in(driver,asset_name):
-
-		tripsstatus = frappe.get_doc({
-			"doctype": "Events",
+		tripstatus = frappe.db.get_list("Events",filters={
 			"driver": driver,
 			"asset_name": asset_name,
 			"date"	: nowdate(),
 			"status" : "Reported In"
-		})
-		if tripsstatus:
-			tripsstatus.insert()
-
+			})
+		
+		if not tripstatus:
+			tripsstatus = frappe.get_doc({
+				"doctype": "Events",
+				"driver": driver,
+				"asset_name": asset_name,
+				"date"	: nowdate(),
+				"status" : "Reported In"
+			})
+			if tripsstatus:
+				tripsstatus.insert()
+	
 		
    
 @frappe.whitelist()
@@ -35,15 +42,21 @@ def truck_error():
     
 @frappe.whitelist()
 def report_out(driver,asset_name):
-		tripsstatus = frappe.get_doc({
+		tripstatus = frappe.db.get_list("Events",filters={
+			"driver": driver,
+			"asset_name": asset_name,
+			"date"	: nowdate(),
+			"status" : "Reported Out"
+			})
+		if not tripstatus:
+			tripsstatus = frappe.get_doc({
 			"doctype": "Events",
 			"driver": driver,
 			"asset_name": asset_name,
 			"date"	: nowdate(),
 			"status" : "Reported Out"
-		})
-		if tripsstatus:
-			tripsstatus.insert()
-   
+			})
+			if tripsstatus:
+				tripsstatus.insert()
    
    
