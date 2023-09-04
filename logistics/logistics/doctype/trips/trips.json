@@ -1,11 +1,5 @@
 {
- "actions": [
-  {
-   "action": "app/doctype/Trips",
-   "action_type": "Server Action",
-   "label": "Open"
-  }
- ],
+ "actions": [],
  "allow_rename": 1,
  "creation": "2023-08-24 11:00:16.175299",
  "default_view": "List",
@@ -18,16 +12,25 @@
   "asset_name",
   "driver",
   "section_break_kark1",
+  "starting_km",
   "start",
-  "trip_details",
-  "voucher",
+  "column_break_vbjwm",
+  "sin_km",
+  "s_in",
+  "section_break_6vxn0",
+  "s_out",
   "close",
   "section_break_kfyte",
   "time",
   "amended_from",
+  "trip",
+  "tab_break_megky",
   "sales_order_id",
+  "column_break_lthhs",
   "sales_order_item_id",
-  "trip"
+  "section_break_notih",
+  "from_address",
+  "to_address"
  ],
  "fields": [
   {
@@ -37,9 +40,11 @@
    "options": "Employee"
   },
   {
+   "default": "now",
    "fieldname": "date",
    "fieldtype": "Date",
-   "label": "Date"
+   "label": "Date",
+   "read_only": 1
   },
   {
    "fieldname": "amended_from",
@@ -70,21 +75,23 @@
   },
   {
    "fieldname": "sales_order_id",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Sales Order Id",
+   "options": "Sales Order",
    "read_only": 1
   },
   {
    "fieldname": "sales_order_item_id",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Sales Order Item Id",
+   "options": "Sales Order Item",
    "read_only": 1
   },
   {
    "fieldname": "trip",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "trip"
+   "label": "Trip"
   },
   {
    "fieldname": "start",
@@ -93,31 +100,75 @@
   },
   {
    "fieldname": "section_break_kark1",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Trip Status"
   },
   {
    "fieldname": "section_break_kfyte",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "trip_details",
-   "fieldtype": "Button",
-   "label": "Trip Details"
-  },
-  {
-   "fieldname": "voucher",
-   "fieldtype": "Button",
-   "label": "Voucher"
-  },
-  {
    "fieldname": "close",
    "fieldtype": "Button",
    "label": "Close"
+  },
+  {
+   "fieldname": "tab_break_megky",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "from_address",
+   "fieldtype": "Long Text",
+   "label": "From Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_address",
+   "fieldtype": "Long Text",
+   "label": "To Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_notih",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_lthhs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_vbjwm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "starting_km",
+   "fieldtype": "Int",
+   "label": "Km"
+  },
+  {
+   "fieldname": "s_in",
+   "fieldtype": "Button",
+   "label": "S in"
+  },
+  {
+   "fieldname": "sin_km",
+   "fieldtype": "Data",
+   "label": "Km"
+  },
+  {
+   "fieldname": "section_break_6vxn0",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "s_out",
+   "fieldtype": "Button",
+   "label": "S out"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-31 17:17:39.504500",
+ "modified": "2023-09-01 16:07:48.527990",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trips",
