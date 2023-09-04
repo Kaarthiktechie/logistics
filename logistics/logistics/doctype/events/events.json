@@ -24,13 +24,6 @@
  ],
  "fields": [
   {
-   "fieldname": "driver",
-   "fieldtype": "Link",
-   "label": "Driver",
-   "options": "Employee",
-   "read_only": 1
-  },
-  {
    "fieldname": "trip",
    "fieldtype": "Link",
    "label": "Trip",
@@ -73,11 +66,18 @@
    "fieldname": "id",
    "fieldtype": "Data",
    "label": "Trip Id"
+  },
+  {
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "label": "Driver",
+   "options": "Employee",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-26 18:26:47.705329",
+ "modified": "2023-09-01 10:32:47.561998",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Events",
