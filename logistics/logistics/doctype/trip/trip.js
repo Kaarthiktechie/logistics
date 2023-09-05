@@ -101,6 +101,15 @@ frappe.ui.form.on('Trip', {
         }})
         
 // Close
+
+frappe.ui.form.on('Trip', {
+    refresh: function(frm) {
+        frm.fields_dict.closing_km.$input.css({'font-size': '16px',
+                                            "text-align":"center",
+                                            "height": "40px",
+                                            "margin": "0 auto",
+                                            "display": "block"});
+}})
     frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.close.$input.css({'font-size': '16px',
@@ -120,7 +129,7 @@ frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['confirm'].$input.on('click', function() {
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.driver",
+                method:"logistics.logistics.doctype.trip.trip.driver",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name,
@@ -136,7 +145,7 @@ frappe.ui.form.on('Trip', {
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.status",
+                method:"logistics.logistics.doctype.trip.trip.status",
                 args:{
                     trip_id:frm.doc.name
                 },
@@ -150,6 +159,7 @@ frappe.ui.form.on('Trip', {
                     frm.toggle_display(['din_km'], status.message.status == "Sout"),
                     frm.toggle_display(['d_in'], status.message.status == "Sout"),
                     frm.toggle_display(['d_out'], status.message.status == "Din"),
+                    frm.toggle_display(['closing_km'], status.message.status == "Dout"),
                     frm.toggle_display(['close'], status.message.status == "Dout");
 
                 }})
@@ -160,7 +170,7 @@ frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         if (frm.doc.asset_name){
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.assigned",
+                method:"logistics.logistics.doctype.trip.trip.assigned",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
@@ -173,7 +183,7 @@ frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['confirm'].$input.on('click', function() {
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.confirm",
+                method:"logistics.logistics.doctype.trip.trip.confirm",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
@@ -186,17 +196,20 @@ frappe.ui.form.on('Trip', {
         frappe.ui.form.on('Trip', {
             refresh: function(frm) {
                 frm.fields_dict['start'].$input.on('click', function() {
-                    // cur_frm_set_df_property("start","read_only")
-                    // console.log(frm.doc.docstatus)
+                    if (frm.doc.starting_km != 0){
                     frm.save()
                     frappe.call({
-                        method:"logistics.logistics.doctype.trips.trips.start",
+                        method:"logistics.logistics.doctype.trip.trip.start",
                         args:{
                             trip_id:frm.doc.name,
                             asset_name:frm.doc.asset_name
                         }
                         })
-                });
+                        }
+                        else{
+                            frappe.throw("Please specify the Km before Start")
+                        }
+                    });
             }
         });
 
@@ -207,7 +220,7 @@ frappe.ui.form.on('Trip', {
             //fkhkfg
             frm.save()
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.sin",
+                method:"logistics.logistics.doctype.trip.trip.sin",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
@@ -224,13 +237,13 @@ frappe.ui.form.on('Trip', {
         frm.fields_dict['s_out'].$input.on('click', function() {
             frm.save();
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.sout",
+                method:"logistics.logistics.doctype.trip.trip.sout",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
                 });
-            frm.refresh();
+            frm.refresh_field("s_out");
         });
     }
 });
@@ -241,7 +254,7 @@ frappe.ui.form.on('Trip', {
         frm.fields_dict['d_in'].$input.on('click', function() {
             frm.save();
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.din",
+                method:"logistics.logistics.doctype.trip.trip.din",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
@@ -258,13 +271,13 @@ frappe.ui.form.on('Trip', {
         frm.fields_dict['d_out'].$input.on('click', function() {
             frm.save();
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.dout",
+                method:"logistics.logistics.doctype.trip.trip.dout",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
                 });
-                frm.refresh();
+                frm.refresh_field("d_out");
         });
     }
 });
@@ -275,13 +288,13 @@ frappe.ui.form.on('Trip', {
         frm.fields_dict['close'].$input.on('click', function() {
             frm.save();
             frappe.call({
-                method:"logistics.logistics.doctype.trips.trips.close",
+                method:"logistics.logistics.doctype.trip.trip.close",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
                 });
-                frm.refresh();
+                frm.refresh_field("close","closed_km");
         })
     }
 });
@@ -304,7 +317,7 @@ frappe.ui.form.on('Driver Login Page', {
                 frm.add_custom_button("Truck", function() {
                     
                     frappe.call({
-                        method:"logistics.logistics.doctype.trips.trips.start",
+                        method:"logistics.logistics.doctype.trip.trip.start",
                         args:{
                             trip_id:frm.doc.name
                         },
@@ -315,14 +328,15 @@ frappe.ui.form.on('Driver Login Page', {
                         
                 });
             }
-        });
+        })
+
 //attendance action button at the top
         frappe.ui.form.on('Trip', {
             refresh: function(frm) {
                 frm.add_custom_button("Attendance", function() {
                     
                     frappe.call({
-                        method:"logistics.logistics.doctype.trips.trips.attendence",
+                        method:"logistics.logistics.doctype.trip.trip.attendence",
                         args:{
                             trip_id:frm.doc.name,
                             asset_name:frm.doc.asset_name,

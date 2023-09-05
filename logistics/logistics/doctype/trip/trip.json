@@ -26,6 +26,7 @@
   "section_break_xdynb",
   "d_out",
   "section_break_s64tp",
+  "closing_km",
   "close",
   "section_break_kfyte",
   "time",
@@ -56,7 +57,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Trips",
+   "options": "Trip",
    "print_hide": 1,
    "read_only": 1
   },
@@ -195,11 +196,16 @@
   {
    "fieldname": "section_break_s64tp",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "closing_km",
+   "fieldtype": "Int",
+   "label": "km"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-05 11:00:02.374770",
+ "modified": "2023-09-05 17:31:24.770234",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trip",

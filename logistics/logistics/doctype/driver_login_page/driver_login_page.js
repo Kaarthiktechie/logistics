@@ -83,7 +83,7 @@ frappe.ui.form.on('Driver Login Page', {
                     method:"logistics.logistics.doctype.driver_login_page.driver_login_page.url",
                 
                 callback:function(domain){
-                window.location.href = domain.message+"/app/trips/?asset_name="+frm.doc.asset_name+"&date="+frm.doc.date
+                window.location.href = domain.message+"/app/trip/?asset_name="+frm.doc.asset_name+"&date="+frm.doc.date
             }})   
             });
         }

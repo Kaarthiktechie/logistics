@@ -73,6 +73,18 @@ def start(trip_id,asset_name):
 			if tripstatus:
 				tripstatus.insert()
     
+    
+
+		truck_closing_km = frappe.db.get_list("Events", filters ={
+			"asset_name": asset_name,
+			"status" : "Closed",
+		},order_by="date desc")
+		if truck_closing_km:
+			trip_starting_km = truck_closing_km[0]
+			trip_starting_km.closing_km
+			frappe.msgprint(trip_starting_km.closing)
+	
+   
 @frappe.whitelist()
 def sin(trip_id,asset_name):
 		triptatus = frappe.db.get_list("Events",filters={
@@ -169,25 +181,6 @@ def close(trip_id,asset_name):
 			if tripstatus:
 				tripstatus.insert()
 
-# @frappe.whitelist()
-# def start(trip_id):
-# 	trip_status_id = frappe.db.get_list ("Events",
-#     filters={
-# 		"trip":["=", trip_id]
-# 	})
- 
-# 	if trip_status_id:
-# 		per_trip_status_id = trip_status_id[0]
-# 		return per_trip_status_id.name
-# 	else:
-# 		trip_status = frappe.get_doc({
-# 						"doctype": "Trip Status",
-# 						"trip" : trip_id
-# 			})
-# 		if trip_status:
-# 			trip_status.insert()
-# 			trip_status.save()
-# 		return trip_status.name
 
 @frappe.whitelist()
 def trip_details(trip_id):
