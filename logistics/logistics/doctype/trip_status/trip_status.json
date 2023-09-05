@@ -121,7 +121,7 @@
    "fieldname": "trip",
    "fieldtype": "Link",
    "label": "Trip",
-   "options": "Trips"
+   "options": "Trip"
   },
   {
    "fieldname": "section_break_3qj0k",
@@ -160,7 +160,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-30 17:57:29.701620",
+ "modified": "2023-09-05 15:05:47.090977",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trip Status",

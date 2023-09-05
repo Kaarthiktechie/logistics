@@ -202,7 +202,7 @@
  "modified": "2023-09-05 11:00:02.374770",
  "modified_by": "Administrator",
  "module": "Logistics",
- "name": "Trips",
+ "name": "Trip",
  "owner": "Administrator",
  "permissions": [
   {

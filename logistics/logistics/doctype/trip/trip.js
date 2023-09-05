@@ -2,7 +2,7 @@
 // For license information, please see license.txt
 
 //Confirm
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict.confirm.$input.css({'font-size': '16px',
                                             "text-align":"center",
@@ -14,7 +14,7 @@ frappe.ui.form.on('Trips', {
                                             "display": "block"});
 	}})
 // Start
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict.start.$input.css({'font-size': '16px',
                                             "text-align":"center",
@@ -25,7 +25,7 @@ frappe.ui.form.on('Trips', {
                                             "margin": "0 auto",
                                             "display": "block"});
 	}})
-    frappe.ui.form.on('Trips', {
+    frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.starting_km.$input.css({'font-size': '16px',
                                                 "text-align":"center",
@@ -35,7 +35,7 @@ frappe.ui.form.on('Trips', {
         }})
 
     // Sin
-    frappe.ui.form.on('Trips', {
+    frappe.ui.form.on('Trip', {
             refresh: function(frm) {
                 frm.fields_dict.sin_km.$input.css({'font-size': '16px',
                                                     "text-align":"center",
@@ -43,7 +43,7 @@ frappe.ui.form.on('Trips', {
                                                     "margin": "0 auto",
                                                     "display": "block"});
     }})
-    frappe.ui.form.on('Trips', {
+    frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.s_in.$input.css({'font-size': '16px',
                                                 "text-align":"center",
@@ -55,7 +55,7 @@ frappe.ui.form.on('Trips', {
                                                 "display": "block"});
         }})
     // Sout
-    frappe.ui.form.on('Trips', {
+    frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.s_out.$input.css({'font-size': '16px',
                                                 "text-align":"center",
@@ -67,7 +67,7 @@ frappe.ui.form.on('Trips', {
                                                 "display": "block"});
         }})
     // Din
-        frappe.ui.form.on('Trips', {
+        frappe.ui.form.on('Trip', {
             refresh: function(frm) {
                 frm.fields_dict.din_km.$input.css({'font-size': '16px',
                                                     "text-align":"center",
@@ -75,7 +75,7 @@ frappe.ui.form.on('Trips', {
                                                     "margin": "0 auto",
                                                     "display": "block"});
     }})
-    frappe.ui.form.on('Trips', {
+    frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.d_in.$input.css({'font-size': '16px',
                                                 "text-align":"center",
@@ -88,7 +88,7 @@ frappe.ui.form.on('Trips', {
         }})
     // Dout
 
-    frappe.ui.form.on('Trips', {
+    frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.d_out.$input.css({'font-size': '16px',
                                                 "text-align":"center",
@@ -101,7 +101,7 @@ frappe.ui.form.on('Trips', {
         }})
         
 // Close
-    frappe.ui.form.on('Trips', {
+    frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.close.$input.css({'font-size': '16px',
             "text-align":"center",
@@ -116,7 +116,7 @@ frappe.ui.form.on('Trips', {
 
 // Scripts
 // for making the driver details as login
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['confirm'].$input.on('click', function() {
             frappe.call({
@@ -133,7 +133,7 @@ frappe.ui.form.on('Trips', {
                 })
 
 //for enabling and disabling button
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
             frappe.call({
                 method:"logistics.logistics.doctype.trips.trips.status",
@@ -156,7 +156,7 @@ frappe.ui.form.on('Trips', {
     }});
 
 //assigned  code
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         if (frm.doc.asset_name){
             frappe.call({
@@ -169,7 +169,7 @@ frappe.ui.form.on('Trips', {
         }}})
     
 //confirmation code
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['confirm'].$input.on('click', function() {
             frappe.call({
@@ -183,7 +183,7 @@ frappe.ui.form.on('Trips', {
 
 
 //onclick function for start
-        frappe.ui.form.on('Trips', {
+        frappe.ui.form.on('Trip', {
             refresh: function(frm) {
                 frm.fields_dict['start'].$input.on('click', function() {
                     // cur_frm_set_df_property("start","read_only")
@@ -201,7 +201,7 @@ frappe.ui.form.on('Trips', {
         });
 
 // Sin
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['s_in'].$input.on('click', function() {
             //fkhkfg
@@ -219,7 +219,7 @@ frappe.ui.form.on('Trips', {
 });
 
 //Sout
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['s_out'].$input.on('click', function() {
             frm.save();
@@ -236,7 +236,7 @@ frappe.ui.form.on('Trips', {
 });
 
 //Din
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['d_in'].$input.on('click', function() {
             frm.save();
@@ -253,7 +253,7 @@ frappe.ui.form.on('Trips', {
 });
 
 //Dout
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['d_out'].$input.on('click', function() {
             frm.save();
@@ -270,7 +270,7 @@ frappe.ui.form.on('Trips', {
 });
 
 //Close
-frappe.ui.form.on('Trips', {
+frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['close'].$input.on('click', function() {
             frm.save();
@@ -299,7 +299,7 @@ frappe.ui.form.on('Driver Login Page', {
     }
 })
 //truck action button at the top
-        frappe.ui.form.on('Trips', {
+        frappe.ui.form.on('Trip', {
             refresh: function(frm) {
                 frm.add_custom_button("Truck", function() {
                     
@@ -317,7 +317,7 @@ frappe.ui.form.on('Driver Login Page', {
             }
         });
 //attendance action button at the top
-        frappe.ui.form.on('Trips', {
+        frappe.ui.form.on('Trip', {
             refresh: function(frm) {
                 frm.add_custom_button("Attendance", function() {
                     
