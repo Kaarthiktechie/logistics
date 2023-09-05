@@ -32,8 +32,9 @@ def report_in(driver,asset_name):
 		
    
 @frappe.whitelist()
-def driver_error():
-    frappe.throw("driver name is not mentioned")
+def url():
+    domain = frappe.utils.get_url()
+    return domain
 
 @frappe.whitelist()
 def truck_error():

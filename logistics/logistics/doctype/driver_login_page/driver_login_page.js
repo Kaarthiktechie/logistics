@@ -79,16 +79,24 @@ frappe.ui.form.on('Driver Login Page', {
     frappe.ui.form.on('Driver Login Page', {
         refresh: function(frm) {
             frm.add_custom_button("Trip", function() {
-                window.location.href = "http://localhost:8000/app/trips/?asset_name="+frm.doc.asset_name+"&date="+frm.doc.date
-                    
+                frappe.call({
+                    method:"logistics.logistics.doctype.driver_login_page.driver_login_page.url",
+                
+                callback:function(domain){
+                window.location.href = domain.message+"/app/trips/?asset_name="+asset_name+"&date="+date
+            }})   
             });
         }
     });
     frappe.ui.form.on('Driver Login Page', {
         refresh: function(frm) {
             frm.add_custom_button("Truck", function() {
-                window.location.href = "http://localhost:8000/app/trips/?asset_name="+frm.doc.asset_name+"&date="+frm.doc.date
-                    
+                frappe.call({
+                    method:"logistics.logistics.doctype.driver_login_page.driver_login_page.url",
+                
+                callback:function(domain){
+                window.location.href = domain.message+"/app/truck/?asset_name="+asset_name
+            }})   
             });
         }
     });
