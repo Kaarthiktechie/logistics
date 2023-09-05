@@ -279,6 +279,6 @@ def driver(trip_id,asset_name,date):
 		if driver:
 			driver_name = driver[0]
 			driver_save = frappe.get_doc("Trips",trip_id)
-			driver_save.employee = driver_name.driver
+			driver_save.driver = driver_name.driver
 			driver_save.save()
 			# return driver_save.employee
