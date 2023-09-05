@@ -11,6 +11,7 @@
   "item_id",
   "asset_name",
   "driver",
+  "confirm",
   "section_break_kark1",
   "starting_km",
   "start",
@@ -19,11 +20,16 @@
   "s_in",
   "section_break_6vxn0",
   "s_out",
+  "section_break_i7ncj",
+  "din_km",
+  "d_in",
+  "section_break_xdynb",
+  "d_out",
+  "section_break_s64tp",
   "close",
   "section_break_kfyte",
   "time",
   "amended_from",
-  "trip",
   "tab_break_megky",
   "sales_order_id",
   "column_break_lthhs",
@@ -35,9 +41,8 @@
  "fields": [
   {
    "fieldname": "driver",
-   "fieldtype": "Link",
-   "label": "Driver",
-   "options": "Employee"
+   "fieldtype": "Data",
+   "label": "Driver"
   },
   {
    "default": "now",
@@ -70,7 +75,7 @@
   {
    "fieldname": "item_id",
    "fieldtype": "Link",
-   "label": "Location",
+   "label": "Route",
    "options": "Item"
   },
   {
@@ -86,12 +91,6 @@
    "label": "Sales Order Item Id",
    "options": "Sales Order Item",
    "read_only": 1
-  },
-  {
-   "fieldname": "trip",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Trip"
   },
   {
    "fieldname": "start",
@@ -153,7 +152,7 @@
   },
   {
    "fieldname": "sin_km",
-   "fieldtype": "Data",
+   "fieldtype": "Int",
    "label": "Km"
   },
   {
@@ -164,11 +163,43 @@
    "fieldname": "s_out",
    "fieldtype": "Button",
    "label": "S out"
+  },
+  {
+   "fieldname": "confirm",
+   "fieldtype": "Button",
+   "label": "Confirm"
+  },
+  {
+   "fieldname": "section_break_i7ncj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "din_km",
+   "fieldtype": "Int",
+   "label": "Km"
+  },
+  {
+   "fieldname": "d_in",
+   "fieldtype": "Button",
+   "label": "D in"
+  },
+  {
+   "fieldname": "section_break_xdynb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "d_out",
+   "fieldtype": "Button",
+   "label": "D out"
+  },
+  {
+   "fieldname": "section_break_s64tp",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-01 16:07:48.527990",
+ "modified": "2023-09-05 11:00:02.374770",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trips",
