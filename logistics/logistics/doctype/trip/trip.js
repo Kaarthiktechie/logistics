@@ -217,6 +217,7 @@ frappe.ui.form.on('Trip', {
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['s_in'].$input.on('click', function() {
+            if (frm.doc.sin_km != 0){
             //fkhkfg
             frm.save()
             frappe.call({
@@ -226,7 +227,11 @@ frappe.ui.form.on('Trip', {
                     asset_name:frm.doc.asset_name
                 }
                 });
-                frm.refresh();
+            }
+            else{
+                frappe.throw("Please specify the Km before Sin")
+            }
+                
         });
     }
 });
@@ -243,7 +248,7 @@ frappe.ui.form.on('Trip', {
                     asset_name:frm.doc.asset_name
                 }
                 });
-            frm.refresh_field("s_out");
+            frm.refresh();
         });
     }
 });
@@ -251,7 +256,9 @@ frappe.ui.form.on('Trip', {
 //Din
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
+        
         frm.fields_dict['d_in'].$input.on('click', function() {
+            if (frm.doc.din_km != 0){
             frm.save();
             frappe.call({
                 method:"logistics.logistics.doctype.trip.trip.din",
@@ -259,7 +266,11 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
-                });
+                });}
+            
+            else{  
+                frappe.throw("Please specify the Km before Din")
+            }
                
         });
     }
@@ -277,7 +288,7 @@ frappe.ui.form.on('Trip', {
                     asset_name:frm.doc.asset_name
                 }
                 });
-                frm.refresh_field("d_out");
+                frm.refresh();
         });
     }
 });
@@ -286,6 +297,7 @@ frappe.ui.form.on('Trip', {
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['close'].$input.on('click', function() {
+            if (frm.doc.closing_km != 0){
             frm.save();
             frappe.call({
                 method:"logistics.logistics.doctype.trip.trip.close",
@@ -293,8 +305,11 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
-                });
-                frm.refresh_field("close","closed_km");
+                });}
+                else{
+                    frappe.throw("Please specify the Km before Close")
+                }
+                frm.refresh();
         })
     }
 });
