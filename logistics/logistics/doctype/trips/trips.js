@@ -285,7 +285,19 @@ frappe.ui.form.on('Trips', {
         })
     }
 });
-
+//trip action button at top
+frappe.ui.form.on('Driver Login Page', {
+    refresh: function(frm) {
+        frm.add_custom_button("Truck", function() {
+            frappe.call({
+                method:"logistics.logistics.doctype.driver_login_page.driver_login_page.url",
+            
+            callback:function(domain){
+            window.location.href = domain.message+"/app/truck/?asset_name="+asset_name
+        }})   
+        });
+    }
+})
 //truck action button at the top
         frappe.ui.form.on('Trips', {
             refresh: function(frm) {
