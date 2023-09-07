@@ -39,7 +39,7 @@ def trip_creation(date,delivery_note,delivery_note_item_id,dispatch_address,ship
 					"item_id" :delivery_note_item.item_code,
 					"date" : date,
 					"asset_name":asset_name,
-					"sales_order_id" : delivery_note,
+					"delivery_note" : delivery_note,
 					"from_address":dispatch_address,
 					"to_address":shipping_address
 		})
