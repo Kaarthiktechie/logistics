@@ -32,7 +32,7 @@
   "time",
   "amended_from",
   "tab_break_megky",
-  "sales_order_id",
+  "delivery_note",
   "column_break_lthhs",
   "sales_order_item_id",
   "section_break_notih",
@@ -78,13 +78,6 @@
    "fieldtype": "Link",
    "label": "Route",
    "options": "Item"
-  },
-  {
-   "fieldname": "sales_order_id",
-   "fieldtype": "Link",
-   "label": "Sales Order Id",
-   "options": "Sales Order",
-   "read_only": 1
   },
   {
    "fieldname": "sales_order_item_id",
@@ -201,11 +194,18 @@
    "fieldname": "closing_km",
    "fieldtype": "Int",
    "label": "km"
+  },
+  {
+   "fieldname": "delivery_note",
+   "fieldtype": "Link",
+   "label": "Delivery Note",
+   "options": "Delivery Note",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-05 17:31:24.770234",
+ "modified": "2023-09-07 12:19:45.334488",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trip",

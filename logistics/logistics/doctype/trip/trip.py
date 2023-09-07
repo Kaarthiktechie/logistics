@@ -31,14 +31,15 @@ class Trip(Document):
 			tripstatus.insert()
    
 @frappe.whitelist()
-def trip_creation(location,date,sales_order,dispatch_address,shipping_address):
-	sales_order_item_info = frappe.db.get_list("Sales Order Item",filters={"parent": sales_order}, fields=['name'])
-	
+def trip_creation(date,delivery_note,delivery_note_item_id,dispatch_address,shipping_address,asset_name):
+	delivery_note_item = frappe.get_doc("Delivery Note Item", delivery_note_item_id)
+	print(delivery_note_item_id,delivery_note_item.item_code)
 	trip = frappe.get_doc({
 					"doctype": "Trip",
-					"item_id" :location,
+					"item_id" :delivery_note_item.item_code,
 					"date" : date,
-					"sales_order_id" : sales_order,
+					"asset_name":asset_name,
+					"sales_order_id" : delivery_note,
 					"from_address":dispatch_address,
 					"to_address":shipping_address
 		})
@@ -46,8 +47,9 @@ def trip_creation(location,date,sales_order,dispatch_address,shipping_address):
 
 	tripstatus = frappe.get_doc({
 				"doctype": "Events",
-				"trip" : location,
+				"trip" : delivery_note_item.item_code,
 				"date"	: date,
+				"asset_name" : asset_name,
 				"status" : "Booked",
 				"id" : trip.name
 			})
@@ -55,7 +57,7 @@ def trip_creation(location,date,sales_order,dispatch_address,shipping_address):
 		tripstatus.insert()
     
 @frappe.whitelist()
-def start(trip_id,asset_name):
+def start(trip_id,asset_name,starting_km):
 		triptatus = frappe.db.get_list("Events",filters={
 			"asset_name": asset_name,
 			"date"	: nowdate(),
@@ -68,21 +70,12 @@ def start(trip_id,asset_name):
 			"asset_name": asset_name,
 			"date"	: nowdate(),
 			"status" : "Started",
-			"id" : trip_id
+			"id" : trip_id,
+			"km": starting_km
 			})
 			if tripstatus:
 				tripstatus.insert()
     
-    
-
-		truck_closing_km = frappe.db.get_list("Events", filters ={
-			"asset_name": asset_name,
-			"status" : "Closed",
-		},order_by="date desc")
-		if truck_closing_km:
-			trip_starting_km = truck_closing_km[0]
-			trip_starting_km.closing_km
-			frappe.msgprint(trip_starting_km.closing)
 	
    
 @frappe.whitelist()

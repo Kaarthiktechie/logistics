@@ -135,9 +135,7 @@ frappe.ui.form.on('Trip', {
                     asset_name:frm.doc.asset_name,
                     date:frm.doc.date
                 },callback:function(driver){
-                    console.log("cur_frm.doc.asset_name ->" + cur_frm.doc.asset_name)
-                    frm.doc.employee=driver.message;
-                    frm.refresh_field("employee");
+                    frm.refresh()
                 }})})}
                 })
 
@@ -202,7 +200,8 @@ frappe.ui.form.on('Trip', {
                         method:"logistics.logistics.doctype.trip.trip.start",
                         args:{
                             trip_id:frm.doc.name,
-                            asset_name:frm.doc.asset_name
+                            asset_name:frm.doc.asset_name,
+                            starting_km : frm.doc.starting_km
                         }
                         })
                         }
