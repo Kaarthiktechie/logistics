@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2023-08-24 11:00:16.175299",
  "default_view": "List",
  "doctype": "DocType",
@@ -37,7 +38,8 @@
   "sales_order_item_id",
   "section_break_notih",
   "from_address",
-  "to_address"
+  "to_address",
+  "naming_series"
  ],
  "fields": [
   {
@@ -201,14 +203,22 @@
    "label": "Delivery Note",
    "options": "Delivery Note",
    "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming series",
+   "options": "TRP-.YYYY.-.MM.-"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-07 12:19:45.334488",
+ "modified": "2023-09-08 18:18:58.658175",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trip",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -226,5 +236,10 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [
+  {
+   "color": "Blue",
+   "title": "S in"
+  }
+ ]
 }

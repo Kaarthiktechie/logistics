@@ -29,6 +29,25 @@ class Trip(Document):
 		})
 		if tripstatus:
 			tripstatus.insert()
+
+# Driver name check for the trips to view
+@frappe.whitelist()
+def driver_id_check(driver_name):
+	driver_id_list = frappe.db.get_list("Employee",filters={"first_name":driver_name},fields=["employee_name","designation","name"])[0]
+	if driver_id_list:
+		driver_doc = frappe.db.get_list("Employee",filters={"name":driver_id_list.name},fields=["employee_name","designation","name"])[0]
+		print(nowdate(),driver_doc.name)
+		reported_doc = frappe.db.get_list("Events",filters={
+            "driver":driver_doc.name,
+            "date":nowdate(),
+            "status":"Reported In"},fields=["asset_name"],
+            )
+		if reported_doc:
+			reported_document = reported_doc[0]
+			reported_truck = reported_document.asset_name
+			return reported_truck,driver_doc, nowdate()
+		else:
+			return False, False, False
    
 @frappe.whitelist()
 def trip_creation(date,delivery_note,delivery_note_item_id,dispatch_address,shipping_address,asset_name):
@@ -57,7 +76,7 @@ def trip_creation(date,delivery_note,delivery_note_item_id,dispatch_address,ship
 		tripstatus.insert()
     
 @frappe.whitelist()
-def start(trip_id,asset_name,starting_km):
+def start(trip_id,asset_name,starting_km):##############km needs to add on the events doctype for all fields
 		triptatus = frappe.db.get_list("Events",filters={
 			"asset_name": asset_name,
 			"date"	: nowdate(),
@@ -76,6 +95,18 @@ def start(trip_id,asset_name,starting_km):
 			if tripstatus:
 				tripstatus.insert()
     
+		trip_doc_list = frappe.db.get_list("Events",filters={
+			"asset_name": asset_name,
+			"status":"Closed"
+		},fields=["km"])
+		if trip_doc_list:
+			trip_doc = trip_doc_list[0]
+			trip_closing_km = trip_doc.km
+			if trip_closing_km:
+				return trip_closing_km
+		else:
+			return 0
+
 	
    
 @frappe.whitelist()

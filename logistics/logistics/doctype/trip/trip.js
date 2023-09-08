@@ -2,6 +2,50 @@
 // For license information, please see license.txt
 
 //Confirm
+// var driver_name = frappe.session.user_fullname
+
+// driver_id_list = frappe.db.get_list("Employee",filters={"employee_name":driver_name},fields=["employee_name","designation"])[0]
+// driver_id = driver_id_list.employee_name
+// if (driver_id_list.designation == "Driver"){
+//     frappe.listview_settings ["Trip"]={
+//         query:{
+//         fields:[employee],
+//         filters:{"employee" : driver_id}
+//                 }
+//                                        }
+//                                             }
+
+
+
+
+
+
+//for enabling and disabling button
+frappe.ui.form.on('Trip', {
+    refresh: function(frm) {
+            frappe.call({
+                method:"logistics.logistics.doctype.trip.trip.status",
+                args:{
+                    trip_id:frm.doc.name
+                },
+                callback:function(status){
+                    frm.toggle_display(["confirm"], status.message.status == "Assigned");
+                    frm.toggle_display(["starting_km"], status.message.status == "Confirmed"),
+                    frm.toggle_display(["start"], status.message.status == "Confirmed"),
+                    frm.toggle_display(['sin_km'], status.message.status == "Started"),
+                    frm.toggle_display(['s_in'], status.message.status == "Started"),
+                    frm.toggle_display(['s_out'], status.message.status == "Sin"),
+                    frm.toggle_display(['din_km'], status.message.status == "Sout"),
+                    frm.toggle_display(['d_in'], status.message.status == "Sout"),
+                    frm.toggle_display(['d_out'], status.message.status == "Din"),
+                    frm.toggle_display(['closing_km'], status.message.status == "Dout"),
+                    frm.toggle_display(['close'], status.message.status == "Dout");
+
+                }})
+    }});
+
+
+
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict.confirm.$input.css({'font-size': '16px',
@@ -139,29 +183,7 @@ frappe.ui.form.on('Trip', {
                 }})})}
                 })
 
-//for enabling and disabling button
-frappe.ui.form.on('Trip', {
-    refresh: function(frm) {
-            frappe.call({
-                method:"logistics.logistics.doctype.trip.trip.status",
-                args:{
-                    trip_id:frm.doc.name
-                },
-                callback:function(status){
-                    frm.toggle_display(["confirm"], status.message.status == "Assigned");
-                    frm.toggle_display(["starting_km"], status.message.status == "Confirmed"),
-                    frm.toggle_display(["start"], status.message.status == "Confirmed"),
-                    frm.toggle_display(['sin_km'], status.message.status == "Started"),
-                    frm.toggle_display(['s_in'], status.message.status == "Started"),
-                    frm.toggle_display(['s_out'], status.message.status == "Sin"),
-                    frm.toggle_display(['din_km'], status.message.status == "Sout"),
-                    frm.toggle_display(['d_in'], status.message.status == "Sout"),
-                    frm.toggle_display(['d_out'], status.message.status == "Din"),
-                    frm.toggle_display(['closing_km'], status.message.status == "Dout"),
-                    frm.toggle_display(['close'], status.message.status == "Dout");
 
-                }})
-    }});
 
 //assigned  code
 frappe.ui.form.on('Trip', {
@@ -174,7 +196,7 @@ frappe.ui.form.on('Trip', {
                     asset_name:frm.doc.asset_name
                 }
             })
-        }}})
+        }}});
     
 //confirmation code
 frappe.ui.form.on('Trip', {
@@ -187,7 +209,7 @@ frappe.ui.form.on('Trip', {
                     asset_name:frm.doc.asset_name
                 }
             });frm.refresh()})
-        }})
+        }});
 
 
 //onclick function for start
@@ -195,20 +217,28 @@ frappe.ui.form.on('Trip', {
             refresh: function(frm) {
                 frm.fields_dict['start'].$input.on('click', function() {
                     if (frm.doc.starting_km != 0){
-                    frm.save()
+                    
                     frappe.call({
                         method:"logistics.logistics.doctype.trip.trip.start",
                         args:{
                             trip_id:frm.doc.name,
                             asset_name:frm.doc.asset_name,
                             starting_km : frm.doc.starting_km
+                        },callback:function(truck__last_closing_km){
+                            if(truck__last_closing_km.message<frm.doc.starting_km){
+                                frappe.msgprint("The trip is stated")
+                            }
+                            else{
+                                frappe.throw("Please specify the Correct Km before Start")
+                            }
                         }
                         })
                         }
                         else{
-                            frappe.throw("Please specify the Km before Start")
+                            frappe.throw("Please specify the Correct Km before Start")
                         }
-                    });
+                        frm.save() 
+                    })
             }
         });
 
@@ -216,22 +246,24 @@ frappe.ui.form.on('Trip', {
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['s_in'].$input.on('click', function() {
-            if (frm.doc.sin_km != 0){
+            if (frm.doc.sin_km != 0 && frm.doc.starting_km <= frm.doc.sin_km){
             //fkhkfg
-            frm.save()
+            
             frappe.call({
                 method:"logistics.logistics.doctype.trip.trip.sin",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
-                });
+                },
+                frappe.msgprint("The truck is at Source In"))
             }
             else{
-                frappe.throw("Please specify the Km before Sin")
+                frappe.throw("Please specify the Correct Km before Sin")
             }
-                
-        });
+            frm.save()
+               
+        })
     }
 });
 
@@ -239,16 +271,17 @@ frappe.ui.form.on('Trip', {
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['s_out'].$input.on('click', function() {
-            frm.save();
+            
             frappe.call({
                 method:"logistics.logistics.doctype.trip.trip.sout",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
-                });
-            frm.refresh();
-        });
+                },
+                frappe.msgprint("The truck is at Source Out"));
+                frm.save()
+        })
     }
 });
 
@@ -257,7 +290,8 @@ frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         
         frm.fields_dict['d_in'].$input.on('click', function() {
-            if (frm.doc.din_km != 0){
+            if (frm.doc.din_km != 0 && frm.doc.sin_km <= frm.doc.din_km){
+                
             frm.save();
             frappe.call({
                 method:"logistics.logistics.doctype.trip.trip.din",
@@ -265,13 +299,16 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
-                });}
+                },
+                frappe.msgprint("The truck is at Destination In"));
+                }
             
             else{  
-                frappe.throw("Please specify the Km before Din")
+                frappe.throw("Please specify the Correct Km before Din");
             }
-               
-        });
+            frm.save();
+
+        })
     }
 });
 
@@ -279,16 +316,16 @@ frappe.ui.form.on('Trip', {
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['d_out'].$input.on('click', function() {
-            frm.save();
+            
             frappe.call({
                 method:"logistics.logistics.doctype.trip.trip.dout",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
-                });
-                frm.refresh();
-        });
+                },frappe.msgprint("The truck is at Destination Out"));
+                frm.save();
+        })
     }
 });
 
@@ -296,19 +333,20 @@ frappe.ui.form.on('Trip', {
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
         frm.fields_dict['close'].$input.on('click', function() {
-            if (frm.doc.closing_km != 0){
-            frm.save();
+            if (frm.doc.closing_km != 0 && frm.doc.din_km <= frm.doc.closing_km){
+            
             frappe.call({
                 method:"logistics.logistics.doctype.trip.trip.close",
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
-                });}
+                },frappe.msgprint("The trip is Closed"));
+            }
                 else{
-                    frappe.throw("Please specify the Km before Close")
+                    frappe.throw("Please specify the Correct Km before Close");
                 }
-                frm.refresh();
+                frm.save()
         })
     }
 });
@@ -364,4 +402,3 @@ frappe.ui.form.on('Driver Login Page', {
                 });
             }
         });
-
