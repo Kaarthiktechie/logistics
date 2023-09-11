@@ -204,6 +204,9 @@ def close(trip_id,asset_name):
 			})
 			if tripstatus:
 				tripstatus.insert()
+			trip_doc_status = frappe.get_doc("Trip",trip_id)
+			trip_doc_status.status = "Completed"
+			trip_doc_status.save()
 
 
 @frappe.whitelist()
@@ -287,9 +290,9 @@ def confirm(trip_id, asset_name):
    
 @frappe.whitelist()
 def driver(trip_id,asset_name,date):
-	is_driver = frappe.db.get_list("Events",filters={
+	is_driver_assigned = frappe.db.get_list("Events",filters={
 		"id": trip_id,"date":date},fields=["driver","time","status"],order_by="time desc")
-	driver_1 = is_driver[0]
+	driver_1 = is_driver_assigned[0]
 	if driver_1.driver == None:
 		driver = frappe.db.get_list("Events",filters={
 		"asset_name": asset_name,"status": "Reported In","date":date},fields=["driver"],order_by="time desc")
@@ -299,3 +302,5 @@ def driver(trip_id,asset_name,date):
 			driver_save.driver = driver_name.driver
 			driver_save.save()
 			# return driver_save.employee
+		else:
+			frappe.throw("Please login to confirm the trip")
