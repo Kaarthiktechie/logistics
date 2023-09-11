@@ -167,24 +167,24 @@ frappe.ui.form.on('Trip', {
 });
         }})
 
-// Scripts
-// for making the driver details as login
-frappe.ui.form.on('Trip', {
-    refresh: function(frm) {
-        frm.fields_dict['confirm'].$input.on('click', function() {
-            frappe.call({
-                method:"logistics.logistics.doctype.trip.trip.driver",
-                args:{
-                    trip_id:frm.doc.name,
-                    asset_name:frm.doc.asset_name,
-                    date:frm.doc.date
-                },callback:function(driver){
-                    frm.refresh()
-                }})})}
-                })
+// // Scripts
+// // for making the driver details as login
+// frappe.ui.form.on('Trip', {
+//     refresh: function(frm) {
+//         frm.fields_dict['confirm'].$input.on('click', function() {
+//             frappe.call({
+//                 method:"logistics.logistics.doctype.trip.trip.driver",
+//                 args:{
+//                     trip_id:frm.doc.name,
+//                     asset_name:frm.doc.asset_name,
+//                     date:frm.doc.date
+//                 },callback:function(driver){
+//                     frm.refresh()
+//                 }})})}
+//                 })
 
 
-
+// frm.refresh();
 //assigned  code
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
@@ -206,7 +206,8 @@ frappe.ui.form.on('Trip', {
                 method:"logistics.logistics.doctype.trip.trip.confirm",
                 args:{
                     trip_id:frm.doc.name,
-                    asset_name:frm.doc.asset_name
+                    asset_name:frm.doc.asset_name,
+                    date:frm.doc.date
                 }
             });frm.refresh()})
         }});
@@ -261,6 +262,7 @@ frappe.ui.form.on('Trip', {
             else{
                 frappe.throw("Please specify the Correct Km before Sin")
             }
+            
             frm.save()
                
         })
