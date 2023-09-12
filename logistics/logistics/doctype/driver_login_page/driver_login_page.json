@@ -13,7 +13,8 @@
   "driver",
   "asset_name",
   "reports_in",
-  "reports_out"
+  "reports_out",
+  "report_status"
  ],
  "fields": [
   {
@@ -50,11 +51,17 @@
    "hidden": 1,
    "label": "Naming Series",
    "options": "DLP-.YYYY.-."
+  },
+  {
+   "fieldname": "report_status",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Report Status"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-08 10:24:03.254925",
+ "modified": "2023-09-12 13:38:52.704222",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Driver Login Page",

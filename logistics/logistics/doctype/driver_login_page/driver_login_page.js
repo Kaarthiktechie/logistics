@@ -37,22 +37,29 @@ frappe.ui.form.on('Driver Login Page', {
             
 //     }});
 
+frappe.ui.form.on('Driver Login Page', {
+    refresh: function(frm) {
+        frm.toggle_display(["reports_in"],  frm.doc.report_status == undefined ),
+        frm.toggle_display(["reports_out"], frm.doc.report_status == 1)
+    }})
+
+
 //report_in function
 
 frappe.ui.form.on('Driver Login Page', {
     refresh: function(frm) {
         frm.fields_dict['reports_in'].$input.on('click', function() {
                 console.log(cur_frm.doc.__islocal)
-                frappe.reported_in = 1
-                frm.save()
                 frappe.call({
                     method:"logistics.logistics.doctype.driver_login_page.driver_login_page.report_in",
                     args:{
                         driver: frm.doc.driver,
                         asset_name:frm.doc.asset_name,
+                        name : frm.doc.name
                         
                     }
-                }) 
+                })
+                frm.save() 
         })
     }
 })
@@ -62,17 +69,19 @@ frappe.ui.form.on('Driver Login Page', {
 frappe.ui.form.on('Driver Login Page', {
     refresh: function(frm) {
         frm.fields_dict['reports_out'].$input.on('click', function() {
-            frm.save()
             console.log(cur_frm.doc.__islocal)
             frappe.call({
                 method:"logistics.logistics.doctype.driver_login_page.driver_login_page.report_out",
                 args:{
                     driver: frm.doc.driver,
-                    asset_name:frm.doc.asset_name
+                    asset_name:frm.doc.asset_name,
+                    name : frm.doc.name
                 }
             })
-        });
-    }})
+            frm.save()
+        })
+    }
+})
 
     //action buttons (trip&truck)
 

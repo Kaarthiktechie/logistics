@@ -7,6 +7,7 @@
   }
  ],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2023-08-24 14:16:13.690081",
  "default_view": "List",
  "doctype": "DocType",
@@ -20,7 +21,9 @@
   "date",
   "time",
   "km",
-  "id"
+  "id",
+  "naming_series",
+  "report_status"
  ],
  "fields": [
   {
@@ -73,14 +76,28 @@
    "label": "Driver",
    "options": "Employee",
    "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming_series",
+   "options": "EVNT-.YYYY.-.MM.-"
+  },
+  {
+   "fieldname": "report_status",
+   "fieldtype": "Data",
+   "label": "Report status",
+   "set_only_once": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-04 18:53:15.130821",
+ "modified": "2023-09-12 13:34:30.210167",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Events",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
