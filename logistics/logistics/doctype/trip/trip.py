@@ -241,34 +241,41 @@ def attendence(trip_id,asset_name):
 		"asset_name":asset_name,
 		"date": date
 	})
+	domain = frappe.utils.get_url()
  
 	if trip_status_id:
 		per_trip_status_id = trip_status_id[0]
 		return per_trip_status_id.name
 	else:
 		trip_status = frappe.get_doc({
-						"doctype": "Trip Status",
-						"trip" : trip_id
+						"doctype": "Driver Login Page",
 			})
 		if trip_status:
 			trip_status.insert()
 			trip_status.save()
-		return trip_status.name
+		return trip_status.name,domain
 
 @frappe.whitelist()
 def status(trip_id):
     status = frappe.db.get_list("Events",filters={
 		"id": trip_id
-	},fields=["name","status","time","date"],order_by="time desc")
+	},fields=["name","status","time","date"],order_by="name desc")
     if status:
         return status[0]
+    else:
+        return 0
     
 @frappe.whitelist()
 def assigned(trip_id, asset_name):   ##### should make if the sales order created the status to be "Created"
-	status = frappe.db.get_list("Events",filters={
-		"id": trip_id
-	},fields=["name","status","time","date"],order_by="time desc")[0]
-	if (status.status == "Booked"):
+
+ 
+	triptatus = frappe.db.get_list("Events",filters={
+			"asset_name": asset_name,
+			"date"	: nowdate(),
+			"status" : "Assigned",
+			"id" : trip_id
+			})
+	if not triptatus:
 		tripstatus = frappe.get_doc({
 			"doctype": "Events",
 			"asset_name": asset_name,
@@ -283,7 +290,7 @@ def assigned(trip_id, asset_name):   ##### should make if the sales order create
 def confirm(trip_id, asset_name,date):
 	status = frappe.db.get_list("Events",filters={
 		"id": trip_id
-	},fields=["name","status","time","date"],order_by="time desc")[0]
+	},fields=["name","status","time","date"],order_by="name desc")[0]
 	
 	
 			

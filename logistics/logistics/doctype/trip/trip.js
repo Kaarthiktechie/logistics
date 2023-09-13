@@ -29,6 +29,9 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name
                 },
                 callback:function(status){
+                    if (status.message == 0){
+                        frm.get_field('confirm').$wrapper.hide();
+                    }
                     frm.toggle_display(["confirm"], status.message.status == "Assigned")
                     frm.toggle_display(["starting_km"], status.message.status == "Confirmed")
                     frm.toggle_display(["start"], status.message.status == "Confirmed")
@@ -390,7 +393,7 @@ frappe.ui.form.on('Driver Login Page', {
                         },
                         callback:function(trip_status_id){
                             console.log(trip_status_id.message)
-                            window.location.href = "http://localhost:8000/app/driver-login-page/"+trip_status_id.message
+                            window.location.href = trip_status_id.message[1]+"/app/driver-login-page/"+trip_status_id.message[0]
                         }});
                         
                 });

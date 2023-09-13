@@ -20,6 +20,7 @@ def report_in(driver,asset_name,name):
             if every_report_in.status == "Reported In":
                 frappe.throw(f"Truck no {asset_name} is already assigned to a driver")
                 a = 1
+                break
             if every_report_in.status == "Reported Out":
                 report_in_sub(driver,asset_name,name)
                 a = 1
@@ -40,9 +41,8 @@ def report_in_sub(driver,asset_name,name):
 								})
         if tripsstatus:
             tripsstatus.insert()
-            driver_report_data = frappe.get_doc("Driver Login Page", name)
-            driver_report_data.report_status = 1
-            driver_report_data.save()
+            
+           
         
         
    
