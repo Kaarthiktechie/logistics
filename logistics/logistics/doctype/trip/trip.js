@@ -206,7 +206,7 @@ frappe.ui.form.on('Trip', {
                     asset_name:frm.doc.asset_name,
                     date:frm.doc.date
                 },callback:function(){
-                    frm.save()
+                    frm.refresh()
                 }
             })
             })
@@ -226,13 +226,13 @@ frappe.ui.form.on('Trip', {
                             asset_name:frm.doc.asset_name,
                             starting_km : frm.doc.starting_km
                         },callback:function(){
-                            frm.save()
-                        }
+                            frm.refresh()
+                                            }
                         });
                     })
                 
             }
-        });
+        })
 
 // Sin
 frappe.ui.form.on('Trip', {
@@ -246,14 +246,16 @@ frappe.ui.form.on('Trip', {
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
-                }
-                },
-                frappe.msgprint("The truck is at S-In"))
-            }
+                    },
+                callback:function(){
+                    frm.refresh()
+                                    }
+                        })
+                                                                            }
             else{
                 frappe.throw("Please specify the Correct Km before S-In")
-            }
-            frm.save()
+                }
+            
                
         })
     }
@@ -270,8 +272,7 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 },callback:function(){
-                    frappe.msgprint("The truck is at S-Out");
-                    frm.save();
+                    frm.refresh()
                 }
                 })
                 
@@ -291,14 +292,17 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 }
+                ,callback:function(){
+                    frm.refresh()
                 },
-                frappe.msgprint("The truck is at D-In"))
+                
+            })
+            
                 }
             
             else{  
                 frappe.throw("Please specify the Correct Km before D-In")
             }
-            frm.save()
 
         })
     }
@@ -315,8 +319,6 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
                 },callback:function(){
-                    frappe.msgprint("The truck is at D-Out");
-                    frm.save();
                     frm.refresh();
                 }
                 })
@@ -337,13 +339,16 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name,
                     km:frm.doc.closing_km
+                },callback:function(){
+                    frm.refresh()
                 }
-                },frappe.msgprint("The trip is Closed"))
+                })
+
             }
                 else{
                     frappe.throw("Please specify the Correct Km before Close")
                 }
-                frm.refresh()
+                
         })
     }
 });

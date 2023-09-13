@@ -78,7 +78,7 @@ def trip_creation(date,delivery_note,delivery_note_item_id,dispatch_address,ship
     
 @frappe.whitelist()
 def start(trip_id,asset_name,starting_km):##############km needs to add on the events doctype for all fields
-		
+
     
 		previous_trip_doc_list = frappe.db.get_list("Events",filters={
 			"asset_name": asset_name,
@@ -92,7 +92,7 @@ def start(trip_id,asset_name,starting_km):##############km needs to add on the e
 			previous_trip_closing_km = 0
 		if previous_trip_closing_km == None:
 			previous_trip_closing_km = 0
-   
+
 		if previous_trip_closing_km != None:
 			current_trip_details = frappe.get_doc("Trip",trip_id)
 			current_trip_details.starting_km = previous_trip_closing_km
@@ -104,6 +104,7 @@ def start(trip_id,asset_name,starting_km):##############km needs to add on the e
 			"status" : "Started",
 			"id" : trip_id
 				})
+
 		if not triptatus:
 			tripstatus = frappe.get_doc({
 				"doctype": "Events",
@@ -115,11 +116,17 @@ def start(trip_id,asset_name,starting_km):##############km needs to add on the e
 					})
 			if tripstatus:
 				tripstatus.insert()
-
+				frappe.msgprint("The trip is Started")
+				return None
+		return None
+    
 	
    
 @frappe.whitelist()
 def sin(trip_id,asset_name):
+		status = frappe.db.get_list("Events",filters={
+		"id": trip_id
+		},fields=["name","status","time","date"],order_by="name desc")   
 		triptatus = frappe.db.get_list("Events",filters={
 			"asset_name": asset_name,
 			"date"	: nowdate(),
@@ -136,7 +143,10 @@ def sin(trip_id,asset_name):
 			})
 			if tripstatus:
 				tripstatus.insert()
-
+				frappe.msgprint("The truck is at S-In")
+				return None
+		return None
+		
 
 @frappe.whitelist()
 def sout(trip_id,asset_name):
@@ -156,6 +166,9 @@ def sout(trip_id,asset_name):
 			})
 			if tripstatus:
 				tripstatus.insert()
+				frappe.msgprint("The truck is at S-Out")
+				return None
+		return None
 
 @frappe.whitelist()
 def din(trip_id,asset_name):
@@ -175,6 +188,9 @@ def din(trip_id,asset_name):
 			})
 			if tripstatus:
 				tripstatus.insert()
+				frappe.msgprint("The truck is at D-In")
+				return None
+		return None
 
 @frappe.whitelist()
 def dout(trip_id,asset_name):
@@ -194,6 +210,9 @@ def dout(trip_id,asset_name):
 			})
 			if tripstatus:
 				tripstatus.insert()
+				frappe.msgprint("The truck is at D-Out")
+				return None
+		return None
 
 @frappe.whitelist()
 def close(trip_id,asset_name,km):
@@ -217,6 +236,9 @@ def close(trip_id,asset_name,km):
 			trip_doc_status = frappe.get_doc("Trip",trip_id)
 			trip_doc_status.status = "Completed"
 			trip_doc_status.save()
+			frappe.msgprint("The trip is Closed")
+			return None
+		return None
 
 
 @frappe.whitelist()
@@ -231,6 +253,7 @@ def trip_details(trip_id):
 		return per_trip_status_id.name
 	else:
 		frappe.throw("There are no trip currently active")
+	return None
   
   
 @frappe.whitelist()
@@ -257,13 +280,21 @@ def attendence(trip_id,asset_name):
 
 @frappe.whitelist()
 def status(trip_id):
-    status = frappe.db.get_list("Events",filters={
+	status_list = frappe.db.get_list("Events",filters={
+													"id": trip_id
+														},
+                                  						fields=["name","status","time","date"],order_by="name desc")
+	for every_status in status_list:
+		if every_status.status == None:
+			frappe.delete_doc("Events",every_status.name)
+	
+	status = frappe.db.get_list("Events",filters={
 		"id": trip_id
 	},fields=["name","status","time","date"],order_by="name desc")
-    if status:
-        return status[0]
-    else:
-        return 0
+	if status:
+		return status[0]
+	else:
+		return 0
     
 @frappe.whitelist()
 def assigned(trip_id, asset_name):   ##### should make if the sales order created the status to be "Created"
@@ -285,16 +316,14 @@ def assigned(trip_id, asset_name):   ##### should make if the sales order create
 			})
 		if tripstatus:
 			tripstatus.insert()
+	return None
    
 @frappe.whitelist()
 def confirm(trip_id, asset_name,date):
 	status = frappe.db.get_list("Events",filters={
 		"id": trip_id
 	},fields=["name","status","time","date"],order_by="name desc")[0]
-	
-	
-			
-   
+	 
 	is_driver_assigned = frappe.db.get_list("Events",filters={
 		"id": trip_id,"date":date},fields=["driver","time","status"],order_by="time desc")
 	driver_1 = is_driver_assigned[0]
@@ -314,11 +343,12 @@ def confirm(trip_id, asset_name,date):
 					"status" : "Confirmed",
 					"id" : trip_id
 					})
-			if tripstatus:
-				tripstatus.insert()
+				if tripstatus:
+					tripstatus.insert()
 			# return driver_save.employee
 		else:
 			frappe.throw("Please Report In to confirm the trip")
+	return None
    
    
    
@@ -338,3 +368,4 @@ def driver(trip_id,asset_name,date):
 			# return driver_save.employee
 		else:
 			frappe.throw("Please login to confirm the trip")
+	return None
