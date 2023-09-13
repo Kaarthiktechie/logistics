@@ -50,16 +50,17 @@ frappe.ui.form.on('Driver Login Page', {
     refresh: function(frm) {
         frm.fields_dict['reports_in'].$input.on('click', function() {
                 console.log(cur_frm.doc.__islocal)
+                frm.save()
                 frappe.call({
                     method:"logistics.logistics.doctype.driver_login_page.driver_login_page.report_in",
                     args:{
                         driver: frm.doc.driver,
                         asset_name:frm.doc.asset_name,
                         name : frm.doc.name
-                        
+                    },callback:function(){
+                        frm.save();
                     }
                 })
-                frm.save() 
         })
     }
 })
@@ -76,9 +77,10 @@ frappe.ui.form.on('Driver Login Page', {
                     driver: frm.doc.driver,
                     asset_name:frm.doc.asset_name,
                     name : frm.doc.name
+                },callback:function(){
+                    frm.save();
                 }
             })
-            frm.save()
         })
     }
 })

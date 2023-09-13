@@ -56,7 +56,7 @@ frappe.ui.form.on('Trip', {
                                             "width": "150px",
                                             "margin": "0 auto",
                                             "display": "block"});
-	}})
+	}});
 // Start
 frappe.ui.form.on('Trip', {
     refresh: function(frm) {
@@ -68,7 +68,7 @@ frappe.ui.form.on('Trip', {
                                             "width": "150px",
                                             "margin": "0 auto",
                                             "display": "block"})
-	}})
+	}});
 
 
 
@@ -80,7 +80,7 @@ frappe.ui.form.on('Trip', {
                                                     "height": "40px",
                                                     "margin": "0 auto",
                                                     "display": "block"});
-    }})
+    }});
     frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.s_in.$input.css({'font-size': '16px',
@@ -91,7 +91,7 @@ frappe.ui.form.on('Trip', {
                                                 "width": "150px",
                                                 "margin": "0 auto",
                                                 "display": "block"});
-        }})
+        }});
     // Sout
     frappe.ui.form.on('Trip', {
         refresh: function(frm) {
@@ -103,7 +103,7 @@ frappe.ui.form.on('Trip', {
                                                 "width": "150px",
                                                 "margin": "0 auto",
                                                 "display": "block"});
-        }})
+        }});
     // Din
         frappe.ui.form.on('Trip', {
             refresh: function(frm) {
@@ -112,7 +112,7 @@ frappe.ui.form.on('Trip', {
                                                     "height": "40px",
                                                     "margin": "0 auto",
                                                     "display": "block"});
-    }})
+    }});
     frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.d_in.$input.css({'font-size': '16px',
@@ -123,7 +123,7 @@ frappe.ui.form.on('Trip', {
                                                 "width": "150px",
                                                 "margin": "0 auto",
                                                 "display": "block"});
-        }})
+        }});
     // Dout
 
     frappe.ui.form.on('Trip', {
@@ -136,7 +136,7 @@ frappe.ui.form.on('Trip', {
                                                 "width": "150px",
                                                 "margin": "0 auto",
                                                 "display": "block"});
-        }})
+        }});
         
 // Close
 
@@ -147,7 +147,7 @@ frappe.ui.form.on('Trip', {
                                             "height": "40px",
                                             "margin": "0 auto",
                                             "display": "block"});
-}})
+}});
     frappe.ui.form.on('Trip', {
         refresh: function(frm) {
             frm.fields_dict.close.$input.css({'font-size': '16px',
@@ -158,8 +158,8 @@ frappe.ui.form.on('Trip', {
             "width": "150px",
             "margin": "0 auto",
             "display": "block"
-});
-        }})
+})
+        }});
 
 // // Scripts
 // // for making the driver details as login
@@ -202,10 +202,12 @@ frappe.ui.form.on('Trip', {
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name,
                     date:frm.doc.date
+                },callback:function(){
+                    frm.save()
                 }
             })
             })
-            frm.save()
+            
         }});
 
 
@@ -220,10 +222,12 @@ frappe.ui.form.on('Trip', {
                             trip_id:frm.doc.name,
                             asset_name:frm.doc.asset_name,
                             starting_km : frm.doc.starting_km
+                        },callback:function(){
+                            frm.save()
                         }
                         });
                     })
-                    frm.save()
+                
             }
         });
 
@@ -262,11 +266,11 @@ frappe.ui.form.on('Trip', {
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
+                },callback:function(){
+                    frappe.msgprint("The truck is at S-Out");
+                    frm.save();
                 }
-                },
-                frappe.msgprint("The truck is at S-Out"),
-                frm.save()
-                )
+                })
                 
         })
     }
@@ -307,9 +311,13 @@ frappe.ui.form.on('Trip', {
                 args:{
                     trip_id:frm.doc.name,
                     asset_name:frm.doc.asset_name
+                },callback:function(){
+                    frappe.msgprint("The truck is at D-Out");
+                    frm.save();
+                    frm.refresh();
                 }
-                },frappe.msgprint("The truck is at D-Out"))
-            frm.save()
+                })
+            
         })
     }
 });
