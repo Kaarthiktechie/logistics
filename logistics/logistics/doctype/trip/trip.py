@@ -7,28 +7,28 @@ import datetime
 from frappe.utils import nowdate, now_datetime
 
 class Trip(Document):	
-  
-	def validate(self):
-		# self.validation()
-		self.table_insert()
+  pass
+	# def validate(self):
+	# 	# self.validation()
+	# 	self.table_insert()
 
-	def validation(self):
-		all_trip = frappe.db.get_list("Events", filters = {"id" : self.name}, fields=["status"])
-		for every_trip in all_trip:
-			if every_trip.status == self.status:
-				frappe.throw("You already have updated the status"+" "+ self.status)
+	# def validation(self):
+	# 	all_trip = frappe.db.get_list("Events", filters = {"id" : self.name}, fields=["status"])
+	# 	for every_trip in all_trip:
+	# 		if every_trip.status == self.status:
+	# 			frappe.throw("You already have updated the status"+" "+ self.status)
   
-	def table_insert(self):
-		tripstatus = frappe.get_doc({
-			"doctype": "Events",
-			"asset_name": self.asset_name,
-			"trip" : self.item_id,
-			"date"	: self.date,
-			"time" : self.time,
-			"id" : self.name
-		})
-		if tripstatus:
-			tripstatus.insert()
+	# def table_insert(self):
+	# 	tripstatus = frappe.get_doc({
+	# 		"doctype": "Events",
+	# 		"asset_name": self.asset_name,
+	# 		"trip" : self.item_id,
+	# 		"date"	: self.date,
+	# 		"time" : self.time,
+	# 		"id" : self.name
+	# 	})
+	# 	if tripstatus:
+	# 		tripstatus.insert()
 
 # Driver name check for the trips to view
 @frappe.whitelist()
@@ -70,7 +70,8 @@ def trip_creation(date,delivery_note,delivery_note_item_id,dispatch_address,ship
 				"date"	: date,
 				"asset_name" : asset_name,
 				"status" : "Assigned",
-				"id" : trip.name
+				"id" : trip.name,
+				"type": "Trip"
 			})
 	if tripstatus:
 		tripstatus.insert()
@@ -112,7 +113,8 @@ def start(trip_id,asset_name,starting_km):##############km needs to add on the e
 				"date"	: nowdate(),
 				"status" : "Started",
 				"id" : trip_id,
-				"km": starting_km
+				"km": starting_km,
+    			"type": "Trip"
 					})
 			if tripstatus:
 				tripstatus.insert()
@@ -139,7 +141,8 @@ def sin(trip_id,asset_name):
 			"asset_name": asset_name,
 			"date"	: nowdate(),
 			"status" : "Sin",
-			"id" : trip_id
+			"id" : trip_id,
+			"type": "Trip"
 			})
 			if tripstatus:
 				tripstatus.insert()
@@ -162,7 +165,8 @@ def sout(trip_id,asset_name):
 			"asset_name": asset_name,
 			"date"	: nowdate(),
 			"status" : "Sout",
-			"id" : trip_id
+			"id" : trip_id,
+			"type": "Trip"
 			})
 			if tripstatus:
 				tripstatus.insert()
@@ -184,7 +188,8 @@ def din(trip_id,asset_name):
 			"asset_name": asset_name,
 			"date"	: nowdate(),
 			"status" : "Din",
-			"id" : trip_id
+			"id" : trip_id,
+			"type": "Trip"
 			})
 			if tripstatus:
 				tripstatus.insert()
@@ -206,7 +211,8 @@ def dout(trip_id,asset_name):
 			"asset_name": asset_name,
 			"date"	: nowdate(),
 			"status" : "Dout",
-			"id" : trip_id
+			"id" : trip_id,
+			"type": "Trip"
 			})
 			if tripstatus:
 				tripstatus.insert()
@@ -229,7 +235,8 @@ def close(trip_id,asset_name,km):
 			"date"	: nowdate(),
 			"status" : "Closed",
 			"id" : trip_id,
-			"km": km
+			"km": km,
+			"type": "Trip"
 			})
 			if tripstatus:
 				tripstatus.insert()
@@ -256,7 +263,7 @@ def trip_details(trip_id):
 	return None
   
   
-@frappe.whitelist()
+@frappe.whitelist()#to work not yet completed
 def attendence(trip_id,asset_name):
 	date = datetime.date.today()
 	trip_status_id = frappe.db.get_list ("Driver Login Page",
@@ -296,27 +303,6 @@ def status(trip_id):
 	else:
 		return 0
     
-@frappe.whitelist()
-def assigned(trip_id, asset_name):   ##### should make if the sales order created the status to be "Created"
-
- 
-	triptatus = frappe.db.get_list("Events",filters={
-			"asset_name": asset_name,
-			"date"	: nowdate(),
-			"status" : "Assigned",
-			"id" : trip_id
-			})
-	if not triptatus:
-		tripstatus = frappe.get_doc({
-			"doctype": "Events",
-			"asset_name": asset_name,
-			"date"	: nowdate(),
-			"status" : "Assigned",
-			"id" : trip_id
-			})
-		if tripstatus:
-			tripstatus.insert()
-	return None
    
 @frappe.whitelist()
 def confirm(trip_id, asset_name,date):
@@ -341,7 +327,8 @@ def confirm(trip_id, asset_name,date):
 					"asset_name": asset_name,
 					"date"	: nowdate(),
 					"status" : "Confirmed",
-					"id" : trip_id
+					"id" : trip_id,
+					"type": "Trip"
 					})
 				if tripstatus:
 					tripstatus.insert()

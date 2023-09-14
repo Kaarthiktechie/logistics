@@ -34,7 +34,8 @@ def report_in_sub(driver,asset_name,name):
 							"driver": driver,
 							"asset_name": asset_name,
 							"date"	: nowdate(),
-							"status" : "Reported In"
+							"status" : "Reported In",
+                                "type": "Attendance"
 								})
         if tripsstatus:
             tripsstatus.insert()
@@ -54,13 +55,20 @@ def truck_error():
     
 @frappe.whitelist()
 def report_out(driver,asset_name,name):
-    
+    tripstatus = frappe.db.get_list("Events",filters={
+            "driver": driver,
+			"asset_name": asset_name,
+			"status" : "Reported Out",
+            "type": "Attendance"
+    })
+    if not tripstatus:
         tripsstatus = frappe.get_doc({
 			"doctype": "Events",
 			"driver": driver,
 			"asset_name": asset_name,
 			"date"	: nowdate(),
-			"status" : "Reported Out"
+			"status" : "Reported Out",
+            "type": "Attendance"
 			})
         if tripsstatus:
             tripsstatus.insert()

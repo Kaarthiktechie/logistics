@@ -23,7 +23,8 @@
   "km",
   "id",
   "naming_series",
-  "report_status"
+  "report_status",
+  "type"
  ],
  "fields": [
   {
@@ -89,11 +90,17 @@
    "fieldtype": "Data",
    "label": "Report status",
    "set_only_once": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Type"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-12 13:34:30.210167",
+ "modified": "2023-09-14 11:40:48.182597",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Events",
