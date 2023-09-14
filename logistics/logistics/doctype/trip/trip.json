@@ -40,7 +40,8 @@
   "from_address",
   "to_address",
   "naming_series",
-  "status"
+  "status",
+  "running_km"
  ],
  "fields": [
   {
@@ -219,11 +220,16 @@
    "hidden": 1,
    "label": "Status",
    "options": "\nCompleted"
+  },
+  {
+   "fieldname": "running_km",
+   "fieldtype": "Data",
+   "label": "Running km"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-11 20:26:12.388451",
+ "modified": "2023-09-14 15:36:59.196479",
  "modified_by": "Administrator",
  "module": "Logistics",
  "name": "Trip",

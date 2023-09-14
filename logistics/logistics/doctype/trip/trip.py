@@ -242,10 +242,51 @@ def close(trip_id,asset_name,km):
 				tripstatus.insert()
 			trip_doc_status = frappe.get_doc("Trip",trip_id)
 			trip_doc_status.status = "Completed"
-			trip_doc_status.save()
 			frappe.msgprint("The trip is Closed")
+			closing_km = km
+   
+			asset_name = "ACC-ASS-2023-00090"
+   
+			
+			# SQL query to retrieve records
+			query = """
+				SELECT *
+				FROM `tabEvents`
+				WHERE `asset_name` = %s
+				AND `status` = 'Started'
+				ORDER BY `name` DESC;
+				"""
+
+				
+			result = frappe.db.sql(query, (asset_name,), as_dict=True)
+
+				
+			print(result)
+
+
+
+
+
+			starting_km = frappe.db.sql("""
+                               SELECT * 
+                               FROM tabEvents
+                               WHERE 'asset_name' = %s 
+                               AND 'status' = 'Started' 
+                               ORDER BY 'name' DESC;
+                               """,(asset_name,), as_dict= True)
+			if starting_km:
+				running_km = int(closing_km) - starting_km
+				trip_doc_status.running_km = running_km
+				trip_doc_status.save()
+			else:
+				starting_km = 0 
+				running_km = int(closing_km) - starting_km
+				trip_doc_status.running_km = running_km
+				trip_doc_status.save()
+				print(trip_doc_status)
 			return None
 		return None
+
 
 
 @frappe.whitelist()
@@ -303,6 +344,27 @@ def status(trip_id):
 	else:
 		return 0
     
+@frappe.whitelist()
+def assigned(trip_id, asset_name):   ##### no need
+
+ 
+	triptatus = frappe.db.get_list("Events",filters={
+			"asset_name": asset_name,
+			"date"	: nowdate(),
+			"status" : "Assigned",
+			"id" : trip_id
+			})
+	if not triptatus:
+		tripstatus = frappe.get_doc({
+			"doctype": "Events",
+			"asset_name": asset_name,
+			"date"	: nowdate(),
+			"status" : "Assigned",
+			"id" : trip_id
+			})
+		if tripstatus:
+			tripstatus.insert()
+	return None
    
 @frappe.whitelist()
 def confirm(trip_id, asset_name,date):

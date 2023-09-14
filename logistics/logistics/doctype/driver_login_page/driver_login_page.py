@@ -8,7 +8,8 @@ class DriverLoginPage(Document):
     pass
 
 def validate_status(asset_name, current_status):
-    last_events = frappe.db.sql(
+
+        last_events = frappe.db.sql(
         """SELECT * from tabEvents e1, 
         (select max(name) as name from tabEvents 
         where asset_name = %s and type = 'Attendance') e2
@@ -16,18 +17,29 @@ def validate_status(asset_name, current_status):
         """,
         asset_name,
         as_dict=True)
-    
-    if last_events:
-        last_event = last_events[0]
-        if last_event.status == current_status:
-            frappe.throw(f"Truck no {asset_name} is already assigned to a driver")
+        # try:
+        #     if last_events:
+        #         last_event = last_events[0]
+        #         if last_event.status == current_status:
+        #             raise Exception(f"Truck no {asset_name} is already assigned to a driver")
+        # except Exception as e:
+        #     frappe.throw(str(e))
+        #     return None
+
+        if last_events:
+            last_event = last_events[0]
+            if last_event.status == current_status:
+               
+                frappe.throw(f"Truck no {asset_name} is already assigned to a driver")
+                return None
     
 @frappe.whitelist()
 def report_in(driver,asset_name,name):
+
     validate_status(asset_name, "Reported In")
     report_in_sub(driver,asset_name,name)
     frappe.msgprint("You have reported in successfully")
-    
+    return None
 def report_in_sub(driver,asset_name,name):
         tripsstatus = frappe.get_doc({
 			"doctype": "Events",
@@ -55,13 +67,13 @@ def truck_error():
     
 @frappe.whitelist()
 def report_out(driver,asset_name,name):
-    tripstatus = frappe.db.get_list("Events",filters={
-            "driver": driver,
-			"asset_name": asset_name,
-			"status" : "Reported Out",
-            "type": "Attendance"
-    })
-    if not tripstatus:
+    query = """SELECT * from tabEvents where type = "Attendance" and (status = "Reported In" Or status = "Reported Out") ORDER BY name DESC LIMIT 1;"""
+    # tripstatus = frappe.db.sql("Select * from tabEvents where type = Attendance and status = (Reported In OR  Reported Out")
+    results = frappe.db.sql(query, as_dict = True)
+    if results:
+        result = results[0]
+            
+    if result.status == "Reported In":
         tripsstatus = frappe.get_doc({
 			"doctype": "Events",
 			"driver": driver,
