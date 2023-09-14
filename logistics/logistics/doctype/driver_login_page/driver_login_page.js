@@ -84,7 +84,7 @@ frappe.ui.form.on('Driver Login Page', {
                     asset_name:frm.doc.asset_name,
                     name : frm.doc.name
                 },callback:function(){
-                    frm.save();
+                    frm.refresh()
                 }
             })
         })

@@ -7,29 +7,26 @@ from frappe.utils import nowdate, now_datetime
 class DriverLoginPage(Document):
     pass
 
-
-
+def validate_status(asset_name, current_status):
+    last_events = frappe.db.sql(
+        """SELECT * from tabEvents e1, 
+        (select max(name) as name from tabEvents 
+        where asset_name = %s and type = 'Attendance') e2
+        where e1.name = e2.name
+        """,
+        asset_name,
+        as_dict=True)
+    
+    if last_events:
+        last_event = last_events[0]
+        if last_event.status == current_status:
+            frappe.throw(f"Truck no {asset_name} is already assigned to a driver")
+    
 @frappe.whitelist()
 def report_in(driver,asset_name,name):
-    report_in_list = frappe.db.get_list("Events",filters={
-		"asset_name":asset_name,
-	},fields=["status"],order_by="name desc")
-    a = 0
-    if report_in_list:
-        for every_report_in  in report_in_list:
-            if every_report_in.status == "Reported In":
-                frappe.throw(f"Truck no {asset_name} is already assigned to a driver")
-                a = 1
-                break
-            if every_report_in.status == "Reported Out":
-                report_in_sub(driver,asset_name,name)
-                a = 1
-                break
-        if a == 0:
-            report_in_sub(driver,asset_name,name)
-    else:
-        report_in_sub(driver,asset_name,name)
-        
+    validate_status(asset_name, "Reported In")
+    report_in_sub(driver,asset_name,name)
+    frappe.msgprint("You have reported in successfully")
     
 def report_in_sub(driver,asset_name,name):
         tripsstatus = frappe.get_doc({
@@ -41,9 +38,8 @@ def report_in_sub(driver,asset_name,name):
 								})
         if tripsstatus:
             tripsstatus.insert()
-            
-           
-        
+
+
         
    
 @frappe.whitelist()
@@ -71,5 +67,6 @@ def report_out(driver,asset_name,name):
             driver_report_data = frappe.get_doc("Driver Login Page", name)
             driver_report_data.report_status = 0
             driver_report_data.save()
+            frappe.msgprint("You have reported out successfully")
    
    
